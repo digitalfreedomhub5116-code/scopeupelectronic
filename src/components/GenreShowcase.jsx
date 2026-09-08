@@ -46,22 +46,16 @@ function CategoryCard({ genre, index }) {
       {/* Atmospheric Vignette Gradient */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent transition-opacity duration-300 group-hover:opacity-90" />
 
-      {/* Card Content */}
-      <div className="absolute inset-0 flex items-end justify-between p-5 sm:p-6 lg:p-7">
-        <div className="max-w-[80%]">
-          <h3 className="font-serif text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-white transition-colors duration-300 group-hover:text-white">
+      {/* Card Content: Category Name and Arrow Only */}
+      <div className="absolute inset-0 flex items-end justify-between p-4 sm:p-6 lg:p-7">
+        <div className="pr-3">
+          <h3 className="font-serif text-lg sm:text-2xl lg:text-3xl font-bold tracking-tight text-white leading-tight">
             {genre.label}
           </h3>
-          <p className="text-xs text-stone-200/90 font-medium block mt-1 line-clamp-1">
-            {genre.description || `${visibleCount} Flagship Devices`}
-          </p>
-          <span className="inline-block mt-2 px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider">
-            {visibleCount} Flagship Models
-          </span>
         </div>
 
-        <div className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-white/90 text-[#1C1917] backdrop-blur-md transition-all duration-300 group-hover:scale-110 group-hover:bg-[#991B33] group-hover:text-white shrink-0 shadow-sm">
-          <ArrowUpRight className="h-5 w-5" />
+        <div className="flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-white/90 text-[#1C1917] backdrop-blur-md transition-all duration-300 group-hover:scale-110 group-hover:bg-[#991B33] group-hover:text-white shrink-0 shadow-sm">
+          <ArrowUpRight className="h-4 w-4 sm:h-5 sm:w-5" />
         </div>
       </div>
     </div>
