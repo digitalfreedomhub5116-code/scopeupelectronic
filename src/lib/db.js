@@ -142,7 +142,7 @@ export async function createOrder(orderPayload) {
       id: 'evt-1',
       status: 'PLACED',
       activity: 'Order placed & payment verified',
-      location: 'Scope International Flagship Store',
+      location: 'Scope International Official Store',
       event_time: new Date().toISOString(),
     },
     {

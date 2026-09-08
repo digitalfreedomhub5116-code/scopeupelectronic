@@ -2633,7 +2633,7 @@ export default function AdminPanelPage() {
                           <span>Add New Electronic Product</span>
                         </h3>
                         <p className="text-xs text-cream-muted/60 mt-0.5">
-                          List a new certified flagship electronic product with specifications
+                          List a new certified premium electronic product with specifications
                         </p>
                       </div>
                       <button

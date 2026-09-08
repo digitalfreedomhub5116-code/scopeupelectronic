@@ -7,13 +7,13 @@ import {
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import { useCartStore, MOCK_PRODUCTS } from '../store/cartStore'
 
-// Flagship products curated for the Desktop Bento Gallery
+// Curated products for Desktop Bento Gallery
 const DESKTOP_BENTO_ITEMS = [
   {
     id: 1,
     name: 'AeroPro Wireless ANC Studio',
     subtitle: '48dB Hybrid ANC · 40mm Ti Drivers',
-    badge: 'FLAGSHIP AUDIO',
+    badge: 'STUDIO AUDIO',
     price: 3499,
     originalPrice: 6999,
     image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=900&q=80',
@@ -209,211 +209,214 @@ export default function Hero() {
   }, [])
 
   return (
-    <section className="relative overflow-hidden bg-[#FAF8F5] pt-32 sm:pt-28 pb-8 sm:pb-20">
+    <section className="relative overflow-hidden bg-[#FAF8F5]">
       {/* Subtle Warm Atmospheric Glows */}
       <div className="pointer-events-none absolute -top-40 -left-40 h-96 w-96 rounded-full bg-[#F5EFEA] blur-3xl opacity-60" />
       <div className="pointer-events-none absolute top-1/3 -right-40 h-96 w-96 rounded-full bg-[#FDF2F4] blur-3xl opacity-50" />
 
       <div ref={ref} className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Main 2-Column Split: Content & Bento Gallery */}
-        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12 xl:gap-16">
-          
-          {/* ──────── LEFT COLUMN: Brand Story, Typography, CTAs ──────── */}
+
+        {/* ──────── MOBILE: Full-Screen Centered Hero ──────── */}
+        <div
+          className={`flex flex-col items-center justify-center text-center min-h-[100svh] pt-32 pb-16 lg:hidden transition-all duration-700 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}
+        >
+          <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#1C1917] tracking-tight leading-[1.18] max-w-sm">
+            Precision Engineered Sound & Premium Tech.
+          </h1>
+
+          <div className="mt-8 flex flex-col items-stretch gap-3 w-full max-w-xs">
+            <button
+              onClick={handleScrollToProducts}
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#991B33] hover:bg-[#7E1227] text-white px-5 py-3.5 text-sm font-bold tracking-wide transition-all shadow-md shadow-[#991B33]/20 active:scale-98 cursor-pointer"
+            >
+              <span>Shop All Devices</span>
+              <ArrowRight className="h-4 w-4" />
+            </button>
+            <button
+              onClick={handleScrollToProducts}
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-[#E7E2D9] bg-white hover:bg-[#F4EFEA] text-[#1C1917] px-5 py-3.5 text-sm font-bold tracking-wide transition-all shadow-xs hover:border-[#D6D0C5] active:scale-98 cursor-pointer"
+            >
+              <span>Explore Best Sellers</span>
+            </button>
+          </div>
+        </div>
+
+        {/* ──────── MOBILE VIEW (< 1024px): IRREGULAR BENTO PATTERN WITH AUTO-SCROLL (Below the fold) ──────── */}
+        <div className="lg:hidden pb-16 pt-2 overflow-hidden -mx-4 px-4">
           <div
-            className={`lg:col-span-5 xl:col-span-5 flex flex-col justify-center text-left transition-all duration-700 ${
+            ref={carouselRef}
+            className="flex gap-3 overflow-x-hidden no-scrollbar pb-2 pt-1 h-[340px] items-stretch"
+          >
+            {infiniteModules.map((mod, idx) => {
+              // 1. Single Tall Card
+              if (mod.type === 'single-tall' || mod.type === 'single-wide') {
+                return (
+                  <div
+                    key={`mod-${idx}`}
+                    data-bento-module="true"
+                    className={`${mod.width} flex-shrink-0 h-full`}
+                  >
+                    <div
+                      onClick={() => handleQuickAdd(mod.product)}
+                      className="relative h-full w-full rounded-3xl overflow-hidden border border-[#E7E2D9] shadow-md bg-stone-100 cursor-pointer active:scale-98 transition-all duration-300 group"
+                    >
+                      <img
+                        src={mod.product.image}
+                        alt={mod.product.name}
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        loading={idx < 6 ? 'eager' : 'lazy'}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-black/10" />
+
+                      {/* Bottom Details */}
+                      <div className="absolute bottom-3.5 left-3.5 right-3.5 z-10">
+                        <h3 className="font-serif text-base font-bold text-white leading-tight line-clamp-1">
+                          {mod.product.name}
+                        </h3>
+                        <p className="text-[11px] text-white/80 mt-0.5 line-clamp-1 font-sans">
+                          {mod.product.chipset || mod.product.anc || mod.product.material || mod.product.description}
+                        </p>
+                        <div className="mt-2.5 flex items-center justify-between">
+                          <div className="flex items-baseline gap-1.5">
+                            <span className="font-serif text-lg font-bold text-white">
+                              ₹{mod.product.price}
+                            </span>
+                            {mod.product.originalPrice && (
+                              <span className="text-xs text-white/60 line-through">
+                                ₹{mod.product.originalPrice}
+                              </span>
+                            )}
+                          </div>
+                          <button
+                            onClick={(e) => handleQuickAdd(mod.product, e)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white text-[#1C1917] hover:bg-stone-100 text-xs font-bold tracking-wide shadow-sm cursor-pointer active:scale-95 transition-all"
+                          >
+                            <ShoppingBag className="h-3 w-3 text-[#991B33]" />
+                            <span>Add</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )
+              }
+
+              // 2. Stacked Pair (Top: 185px, Bottom: 145px) or Inverted (Top: 145px, Bottom: 185px)
+              const isPair1 = mod.type === 'stacked-pair-1'
+              const topHeight = isPair1 ? 'h-[185px]' : 'h-[145px]'
+              const bottomHeight = isPair1 ? 'h-[145px]' : 'h-[185px]'
+
+              return (
+                <div
+                  key={`mod-${idx}`}
+                  data-bento-module="true"
+                  className={`${mod.width} flex-shrink-0 h-full flex flex-col justify-between gap-2.5`}
+                >
+                  {/* Top Card */}
+                  <div
+                    onClick={() => handleQuickAdd(mod.topProduct)}
+                    className={`relative ${topHeight} w-full rounded-2xl overflow-hidden border border-[#E7E2D9] shadow-xs bg-stone-100 cursor-pointer active:scale-98 transition-all group`}
+                  >
+                    <img
+                      src={mod.topProduct.image}
+                      alt={mod.topProduct.name}
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      loading={idx < 6 ? 'eager' : 'lazy'}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/10" />
+                    <div className="absolute bottom-2.5 left-2.5 right-2.5 z-10 flex items-end justify-between">
+                      <div className="max-w-[70%]">
+                        <h4 className="font-serif text-xs font-bold text-white line-clamp-1">
+                          {mod.topProduct.name}
+                        </h4>
+                        <span className="text-xs font-bold text-amber-300">
+                          ₹{mod.topProduct.price}
+                        </span>
+                      </div>
+                      <button
+                        onClick={(e) => handleQuickAdd(mod.topProduct, e)}
+                        className="p-1.5 rounded-full bg-white text-[#1C1917] hover:bg-stone-100 shadow-xs cursor-pointer active:scale-95"
+                        title="Add to Bag"
+                      >
+                        <ShoppingBag className="h-3 w-3 text-[#991B33]" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Bottom Card */}
+                  <div
+                    onClick={() => handleQuickAdd(mod.bottomProduct)}
+                    className={`relative ${bottomHeight} w-full rounded-2xl overflow-hidden border border-[#E7E2D9] shadow-xs bg-stone-100 cursor-pointer active:scale-98 transition-all group`}
+                  >
+                    <img
+                      src={mod.bottomProduct.image}
+                      alt={mod.bottomProduct.name}
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      loading={idx < 6 ? 'eager' : 'lazy'}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/10" />
+                    <div className="absolute bottom-2 left-2 right-2 z-10 flex items-end justify-between">
+                      <div className="max-w-[70%]">
+                        <h4 className="font-serif text-[11px] font-bold text-white line-clamp-1">
+                          {mod.bottomProduct.name}
+                        </h4>
+                        <span className="text-xs font-bold text-amber-300">
+                          ₹{mod.bottomProduct.price}
+                        </span>
+                      </div>
+                      <button
+                        onClick={(e) => handleQuickAdd(mod.bottomProduct, e)}
+                        className="p-1.5 rounded-full bg-white text-[#1C1917] hover:bg-stone-100 shadow-xs cursor-pointer active:scale-95"
+                        title="Add to Bag"
+                      >
+                        <ShoppingBag className="h-3 w-3 text-[#991B33]" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* ──────── DESKTOP: 2-Column Split (lg+) ──────── */}
+        <div className="hidden lg:grid grid-cols-12 items-center gap-12 xl:gap-16 pt-28 pb-20">
+          <div
+            className={`col-span-5 xl:col-span-5 flex flex-col justify-center text-left transition-all duration-700 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
-
-
-            {/* Editorial Serif Main Headline */}
-            <h1 className="font-serif text-2xl sm:text-5xl lg:text-[46px] xl:text-[52px] font-bold text-[#1C1917] tracking-tight leading-[1.14]">
-              Precision Engineered Sound &amp; Flagship Tech.
+            <h1 className="font-serif text-[46px] xl:text-[52px] font-bold text-[#1C1917] tracking-tight leading-[1.14]">
+              Precision Engineered Sound & Premium Tech.
             </h1>
 
-
-
-            {/* Dual CTAs */}
-            <div className="mt-4 sm:mt-7 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+            <div className="mt-7 flex flex-row items-center gap-3">
               <button
                 onClick={handleScrollToProducts}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#991B33] hover:bg-[#7E1227] text-white px-5 py-3 text-xs sm:text-sm font-bold tracking-wide transition-all shadow-md shadow-[#991B33]/20 hover:shadow-lg hover:shadow-[#991B33]/30 active:scale-98 cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#991B33] hover:bg-[#7E1227] text-white px-6 py-3.5 text-sm font-bold tracking-wide transition-all shadow-md shadow-[#991B33]/20 hover:shadow-lg hover:shadow-[#991B33]/30 active:scale-98 cursor-pointer"
               >
-                <span>Shop Flagship Devices</span>
+                <span>Shop All Devices</span>
                 <ArrowRight className="h-4 w-4" />
               </button>
               <button
                 onClick={handleScrollToProducts}
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#E7E2D9] bg-white hover:bg-[#F4EFEA] text-[#1C1917] px-5 py-3 text-xs sm:text-sm font-bold tracking-wide transition-all shadow-xs hover:border-[#D6D0C5] active:scale-98 cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#E7E2D9] bg-white hover:bg-[#F4EFEA] text-[#1C1917] px-6 py-3.5 text-sm font-bold tracking-wide transition-all shadow-xs hover:border-[#D6D0C5] active:scale-98 cursor-pointer"
               >
                 <span>Explore Best Sellers</span>
               </button>
             </div>
           </div>
 
-          {/* ──────── RIGHT COLUMN: BENTO GALLERY ──────── */}
+          {/* ──────── RIGHT COLUMN: DESKTOP BENTO GALLERY ──────── */}
           <div
-            className={`lg:col-span-7 xl:col-span-7 transition-all duration-700 delay-200 ${
+            className={`col-span-7 xl:col-span-7 transition-all duration-700 delay-200 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
-            {/* ══════════════════════════════════════════════════════════════
-                MOBILE VIEW (< 1024px): IRREGULAR BENTO PATTERN WITH AUTO-SCROLL
-                - Alternating tall cards, wide cards, and stacked irregular pairs
-                - Fixed 340px height for impeccable vertical fit on phone screens
-                - 60FPS fluid ambient auto-scroll with pause-on-touch interaction
-               ══════════════════════════════════════════════════════════════ */}
-            <div className="lg:hidden">
-              <div
-                ref={carouselRef}
-                className="flex gap-3 overflow-x-hidden no-scrollbar pb-2 pt-1 -mx-4 px-4 h-[340px] items-stretch"
-              >
-                {infiniteModules.map((mod, idx) => {
-                  // 1. Single Tall Card
-                  if (mod.type === 'single-tall' || mod.type === 'single-wide') {
-                    return (
-                      <div
-                        key={`mod-${idx}`}
-                        data-bento-module="true"
-                        className={`${mod.width} flex-shrink-0 h-full`}
-                      >
-                        <div
-                          onClick={() => handleQuickAdd(mod.product)}
-                          className="relative h-full w-full rounded-3xl overflow-hidden border border-[#E7E2D9] shadow-md bg-stone-100 cursor-pointer active:scale-98 transition-all duration-300 group"
-                        >
-                          <img
-                            src={mod.product.image}
-                            alt={mod.product.name}
-                            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                            loading={idx < 6 ? 'eager' : 'lazy'}
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-black/10" />
-
-
-
-                          {/* Bottom Details */}
-                          <div className="absolute bottom-3.5 left-3.5 right-3.5 z-10">
-                            <h3 className="font-serif text-base font-bold text-white leading-tight line-clamp-1">
-                              {mod.product.name}
-                            </h3>
-                            <p className="text-[11px] text-white/80 mt-0.5 line-clamp-1 font-sans">
-                              {mod.product.chipset || mod.product.anc || mod.product.material || mod.product.description}
-                            </p>
-                            <div className="mt-2.5 flex items-center justify-between">
-                              <div className="flex items-baseline gap-1.5">
-                                <span className="font-serif text-lg font-bold text-white">
-                                  ₹{mod.product.price}
-                                </span>
-                                {mod.product.originalPrice && (
-                                  <span className="text-xs text-white/60 line-through">
-                                    ₹{mod.product.originalPrice}
-                                  </span>
-                                )}
-                              </div>
-                              <button
-                                onClick={(e) => handleQuickAdd(mod.product, e)}
-                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white text-[#1C1917] hover:bg-stone-100 text-xs font-bold tracking-wide shadow-sm cursor-pointer active:scale-95 transition-all"
-                              >
-                                <ShoppingBag className="h-3 w-3 text-[#991B33]" />
-                                <span>Add</span>
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )
-                  }
-
-                  // 2. Stacked Pair (Top: 185px, Bottom: 145px) or Inverted (Top: 145px, Bottom: 185px)
-                  const isPair1 = mod.type === 'stacked-pair-1'
-                  const topHeight = isPair1 ? 'h-[185px]' : 'h-[145px]'
-                  const bottomHeight = isPair1 ? 'h-[145px]' : 'h-[185px]'
-
-                  return (
-                    <div
-                      key={`mod-${idx}`}
-                      data-bento-module="true"
-                      className={`${mod.width} flex-shrink-0 h-full flex flex-col justify-between gap-2.5`}
-                    >
-                      {/* Top Card */}
-                      <div
-                        onClick={() => handleQuickAdd(mod.topProduct)}
-                        className={`relative ${topHeight} w-full rounded-2xl overflow-hidden border border-[#E7E2D9] shadow-xs bg-stone-100 cursor-pointer active:scale-98 transition-all group`}
-                      >
-                        <img
-                          src={mod.topProduct.image}
-                          alt={mod.topProduct.name}
-                          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                          loading={idx < 6 ? 'eager' : 'lazy'}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/10" />
-                        <div className="absolute top-2.5 left-2.5 z-10">
-                          <span className="px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-white/90 backdrop-blur-md text-[#1C1917]">
-                            {mod.topProduct.genre || 'TECH'}
-                          </span>
-                        </div>
-                        <div className="absolute bottom-2.5 left-2.5 right-2.5 z-10 flex items-end justify-between">
-                          <div className="max-w-[70%]">
-                            <h4 className="font-serif text-xs font-bold text-white line-clamp-1">
-                              {mod.topProduct.name}
-                            </h4>
-                            <span className="text-xs font-bold text-amber-300">
-                              ₹{mod.topProduct.price}
-                            </span>
-                          </div>
-                          <button
-                            onClick={(e) => handleQuickAdd(mod.topProduct, e)}
-                            className="p-1.5 rounded-full bg-white text-[#1C1917] hover:bg-stone-100 shadow-xs cursor-pointer active:scale-95"
-                            title="Add to Bag"
-                          >
-                            <ShoppingBag className="h-3 w-3 text-[#991B33]" />
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Bottom Card */}
-                      <div
-                        onClick={() => handleQuickAdd(mod.bottomProduct)}
-                        className={`relative ${bottomHeight} w-full rounded-2xl overflow-hidden border border-[#E7E2D9] shadow-xs bg-stone-100 cursor-pointer active:scale-98 transition-all group`}
-                      >
-                        <img
-                          src={mod.bottomProduct.image}
-                          alt={mod.bottomProduct.name}
-                          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                          loading={idx < 6 ? 'eager' : 'lazy'}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/10" />
-                        <div className="absolute top-2 left-2 z-10">
-                          <span className="px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-white/90 backdrop-blur-md text-[#1C1917]">
-                            {mod.bottomProduct.genre || 'TECH'}
-                          </span>
-                        </div>
-                        <div className="absolute bottom-2 left-2 right-2 z-10 flex items-end justify-between">
-                          <div className="max-w-[70%]">
-                            <h4 className="font-serif text-[11px] font-bold text-white line-clamp-1">
-                              {mod.bottomProduct.name}
-                            </h4>
-                            <span className="text-xs font-bold text-amber-300">
-                              ₹{mod.bottomProduct.price}
-                            </span>
-                          </div>
-                          <button
-                            onClick={(e) => handleQuickAdd(mod.bottomProduct, e)}
-                            className="p-1.5 rounded-full bg-white text-[#1C1917] hover:bg-stone-100 shadow-xs cursor-pointer active:scale-95"
-                            title="Add to Bag"
-                          >
-                            <ShoppingBag className="h-3 w-3 text-[#991B33]" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-
             {/* DESKTOP VIEW: DUAL-COLUMN STAGGERED MASONRY BENTO GRID */}
-            <div className="hidden lg:grid grid-cols-2 gap-3.5 xl:gap-4.5">
+            <div className="grid grid-cols-2 gap-3.5 xl:gap-4.5">
               {/* Left Staggered Column */}
               <div className="space-y-3.5 xl:space-y-4.5">
                 {/* 1. AeroPro Studio ANC Headphones */}

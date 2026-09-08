@@ -504,7 +504,7 @@ function OrderCard({
               </div>
               <div>
                 <h3 className="font-heading text-base font-bold text-[#1C1917]">Electronic Hardware</h3>
-                <p className="text-xs text-[#78716C]">Certified Flagship Quality</p>
+                <p className="text-xs text-[#78716C]">Certified Premium Quality</p>
               </div>
             </div>
           ) : (
@@ -661,7 +661,7 @@ function OrderCard({
                     to="/"
                     className="text-[#1C1917] hover:text-[#991B33] transition-colors font-semibold"
                   >
-                    Explore Flagship Products →
+                    Explore All Products →
                   </Link>
                 </div>
               </div>

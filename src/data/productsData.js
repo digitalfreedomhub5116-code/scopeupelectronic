@@ -356,7 +356,7 @@ const RAW_PRODUCTS = [
     dimensions: '154mm * 70mm * 38mm',
     weight: '560g Heavy Duty Backup',
     material: 'Anodized Aluminum Alloy Casing',
-    description: 'Colossal 30,000mAh backup reservoir equipped with bidirectional 100W USB-C charging. Capable of recharging modern laptops up to 2 times and flagship smartphones up to 7 times.',
+    description: 'Colossal 30,000mAh backup reservoir equipped with bidirectional 100W USB-C charging. Capable of recharging modern laptops up to 2 times and smartphones up to 7 times.',
     features: [
       '100W USB-C Power Delivery charges high-end laptops at native wall-plug speeds',
       'Large OLED digital percentage display reporting real-time watts, volts, and runtime',
@@ -478,12 +478,12 @@ const RAW_PRODUCTS = [
     purity: 'GRADE A+',
     compliance: 'CE / FCC / RoHS',
     pack: 'Collector Gift Box with Extra Skates',
-    chipset: 'PixArt PAW3395 Flagship Sensor',
+    chipset: 'PixArt PAW3395 Sensor',
     battery: '300mAh (90h Continuous Gaming)',
     dimensions: '122mm * 64mm * 38mm',
     weight: '54g Ultra-Light Honeycomb-Free',
     material: 'High Durability Matte Polymer with PTFE Skates',
-    description: 'Featherlight 54-gram competitive gaming mouse equipped with the flagship PixArt PAW3395 26,000 DPI optical sensor and 100% virgin grade PTFE glide feet.',
+    description: 'Featherlight 54-gram competitive gaming mouse equipped with the PixArt PAW3395 26,000 DPI optical sensor and 100% virgin grade PTFE glide feet.',
     features: [
       'PixArt PAW3395 sensor: 26,000 DPI, 650 IPS tracking speed, 50G acceleration',
       '54g solid shell construction without hole cutouts for pristine structural integrity',

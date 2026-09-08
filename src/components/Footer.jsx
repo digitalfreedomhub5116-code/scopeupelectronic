@@ -34,7 +34,7 @@ export default function Footer() {
               </div>
             </Link>
             <p className="mt-3.5 max-w-xs text-xs sm:text-sm leading-relaxed text-[#78716C]">
-              Direct flagship consumer electronics brand crafting studio-grade audio, titanium smart wearables, and high-performance GaN charging stations.
+              Direct premium consumer electronics brand crafting studio-grade audio, titanium smart wearables, and high-performance GaN charging stations.
             </p>
           </div>
 
@@ -93,7 +93,7 @@ export default function Footer() {
               Scope Newsletter
             </h4>
             <p className="mt-4 text-xs sm:text-sm text-[#78716C]">
-              Subscribe to receive private preview access to new flagship releases and member privileges.
+              Subscribe to receive private preview access to new releases and member privileges.
             </p>
             <div className="mt-3 flex shadow-xs">
               <input
@@ -111,7 +111,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="mt-12 flex flex-col items-center gap-3 border-t border-[#E7E2D9] pt-6 sm:flex-row sm:justify-between">
           <p className="text-xs text-[#78716C]">
-            © 2026 Scope International. All rights reserved. Flagship consumer electronics & acoustics.
+            © 2026 Scope International. All rights reserved. Premium consumer electronics & acoustics.
           </p>
           <div className="flex items-center gap-5">
             {['Privacy Policy', 'Terms of Service', 'Warranty Policy'].map((link) => (

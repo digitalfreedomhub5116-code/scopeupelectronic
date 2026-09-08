@@ -154,13 +154,13 @@ export default function CartDrawer() {
                 Your shopping bag is empty
               </p>
               <p className="mt-1 text-xs text-[#78716C] max-w-xs">
-                Explore our flagship audio, titanium wearables, and smart accessories to add to your order.
+                Explore our premium audio, titanium wearables, and smart accessories to add to your order.
               </p>
               <button
                 onClick={closeCart}
                 className="mt-6 rounded-full border border-[#991B33] px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-[#991B33] transition-all hover:bg-[#991B33] hover:text-white"
               >
-                Explore Flagship Collection
+                Explore Collection
               </button>
             </div>
           ) : (

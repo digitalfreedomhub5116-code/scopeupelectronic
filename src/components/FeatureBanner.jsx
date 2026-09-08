@@ -58,7 +58,7 @@ export default function FeatureBanner() {
                 </div>
                 <div>
                   <h4 className="font-serif text-sm font-bold text-[#1C1917]">
-                    Audiophile & Flagship Silicon
+                    Audiophile & Advanced Silicon
                   </h4>
                   <p className="text-xs text-[#78716C] mt-0.5">
                     Powered by class-leading DACs, Nordic low-latency RF transceivers, and Navitas GaN power micro-controllers.

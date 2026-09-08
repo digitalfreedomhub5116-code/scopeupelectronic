@@ -11,7 +11,7 @@ export const REVIEWS_POOL = {
     { name: "Varun Malhotra", text: "active noise cancellation cut down all traffic and office chatter easily" },
     { name: "Pranav Iyer", text: "sound signature and instrument separation is pristine true audiophile delight" },
     { name: "Ankit Deshmukh", text: "fast charging speed is unbelievable 100 percent in under 35 mins" },
-    { name: "Devendra Joshi", text: "genuine certified flagship hardware official warranty activated without hassle" },
+    { name: "Devendra Joshi", text: "genuine certified premium hardware official warranty activated without hassle" },
     { name: "Harshit Sen", text: "crystal clear mic quality during zoom meetings clients heard me clearly" },
     { name: "Nikhil Kulkarni", text: "finish and aluminum enclosure feels ultra premium top tier engineering" },
     { name: "Gautam Mehta", text: "best audio gear in this price segment hands down very satisfied" },

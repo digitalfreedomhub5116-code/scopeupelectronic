@@ -120,7 +120,7 @@ export const useCartStore = create((set, get) => ({
       purity: newProduct.purity || 'GRADE A+',
       compliance: newProduct.compliance || 'CE / FCC / RoHS',
       pack: newProduct.pack || 'Signature Presentation Box',
-      durability: newProduct.durability || 'Flagship Grade Tested Reliability',
+      durability: newProduct.durability || 'Premium Grade Tested Reliability',
       features: newProduct.features || [
         'CE and FCC certified for consumer safety & compliance',
         'Multi-stage automated QC verified hardware reliability',

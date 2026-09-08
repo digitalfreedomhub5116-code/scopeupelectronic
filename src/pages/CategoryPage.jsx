@@ -222,7 +222,7 @@ export default function CategoryPage() {
                 {genre.label} Collection
               </h1>
               <p className="mt-2 max-w-xl text-sm leading-relaxed text-[#44403C] sm:text-base">
-                Certified {genre.label.toLowerCase()} devices, audiophile components, and flagship consumer technology.
+                Certified {genre.label.toLowerCase()} devices, audiophile components, and premium consumer technology.
               </p>
             </div>
 
@@ -262,7 +262,7 @@ export default function CategoryPage() {
                 Expanding {genre.label} Collection
               </h2>
               <p className="mt-4 max-w-lg mx-auto text-base sm:text-lg leading-relaxed text-[#44403C]">
-                We are curating new flagship <span className="text-[#991B33] font-semibold">{genre.label}</span> innovations for this collection.
+                We are curating new premium <span className="text-[#991B33] font-semibold">{genre.label}</span> innovations for this collection.
               </p>
 
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
