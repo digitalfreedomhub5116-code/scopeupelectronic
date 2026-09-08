@@ -3,7 +3,6 @@ import Hero from '../components/Hero'
 import MarqueeBanner from '../components/MarqueeBanner'
 import GenreShowcase from '../components/GenreShowcase'
 import ProductGrid from '../components/ProductGrid'
-import FeatureBanner from '../components/FeatureBanner'
 import Footer from '../components/Footer'
 import CartDrawer from '../components/CartDrawer'
 import ReviewsModal from '../components/ReviewsModal'
@@ -18,7 +17,6 @@ export default function HomePage() {
         <MarqueeBanner />
         <GenreShowcase />
         <ProductGrid />
-        <FeatureBanner />
       </main>
       <Footer />
       <CartDrawer />
