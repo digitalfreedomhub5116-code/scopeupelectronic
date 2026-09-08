@@ -1,10 +1,19 @@
-import { useState, useRef } from 'react'
-import { ArrowRight, MessageCircle, Star, ShoppingBag, Sparkles } from 'lucide-react'
+import { useState, useRef, useEffect, useCallback } from 'react'
+import {
+  ArrowRight,
+  MessageCircle,
+  Star,
+  ShoppingBag,
+  Sparkles,
+  ChevronLeft,
+  ChevronRight,
+  Zap,
+} from 'lucide-react'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import { useCartStore, MOCK_PRODUCTS } from '../store/cartStore'
 
-// Flagship products curated for the Bento Gallery
-const BENTO_ITEMS = [
+// Flagship products curated for the Desktop Bento Gallery
+const DESKTOP_BENTO_ITEMS = [
   {
     id: 1,
     name: 'AeroPro Wireless ANC Studio',
@@ -69,15 +78,25 @@ const BENTO_ITEMS = [
 
 export default function Hero() {
   const [ref, isVisible] = useScrollReveal(0.05)
-  const [currentSlide, setCurrentSlide] = useState(0)
   const carouselRef = useRef(null)
+  const touchTimeoutRef = useRef(null)
+
+  const rawProducts = useCartStore((s) => s.products) || MOCK_PRODUCTS
+  const allProducts = rawProducts.filter((p) => !p.isHidden)
+  const productList = allProducts.length > 0 ? allProducts : MOCK_PRODUCTS
+
+  // Create a 3x loop list for seamless infinite horizontal scrolling on mobile
+  const infiniteList = [...productList, ...productList, ...productList]
+
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isInteracting, setIsInteracting] = useState(false)
 
   const addItem = useCartStore((s) => s.addItem)
   const openCart = useCartStore((s) => s.openCart)
 
   const handleQuickAdd = (productData, e) => {
     if (e) e.stopPropagation()
-    const fullProduct = MOCK_PRODUCTS.find((p) => p.id === productData.id) || productData
+    const fullProduct = productList.find((p) => p.id === productData.id) || productData
     addItem(fullProduct)
     openCart()
   }
@@ -87,25 +106,89 @@ export default function Hero() {
     if (el) el.scrollIntoView({ behavior: 'smooth' })
   }
 
-  // Handle mobile swipe tracking for micro-dots
-  const handleCarouselScroll = (e) => {
-    const container = e.currentTarget
-    const scrollLeft = container.scrollLeft
-    const cardWidth = container.clientWidth * 0.78
-    const newIndex = Math.round(scrollLeft / (cardWidth || 1))
-    setCurrentSlide(Math.min(Math.max(newIndex, 0), 2))
+  // Measure card width + gap dynamically
+  const getCardMetrics = useCallback(() => {
+    if (!carouselRef.current) return { cardWidth: 280, singleSetWidth: 280 * productList.length }
+    const container = carouselRef.current
+    const firstCard = container.querySelector('[data-bento-card]')
+    const cardWidth = firstCard ? firstCard.offsetWidth + 12 : container.clientWidth * 0.78 + 12
+    const singleSetWidth = cardWidth * productList.length
+    return { cardWidth, singleSetWidth }
+  }, [productList.length])
+
+  // Center initial scroll position to the middle duplicate set on mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (carouselRef.current && productList.length > 0) {
+        const { singleSetWidth } = getCardMetrics()
+        carouselRef.current.scrollLeft = singleSetWidth
+      }
+    }, 100)
+    return () => clearTimeout(timer)
+  }, [getCardMetrics, productList.length])
+
+  // Continuous Seamless Infinite Wrap Detection & Live Index Tracker
+  const handleScroll = () => {
+    if (!carouselRef.current) return
+    const container = carouselRef.current
+    const { cardWidth, singleSetWidth } = getCardMetrics()
+    if (singleSetWidth <= 0 || cardWidth <= 0) return
+
+    // Invisible Wrap-Around: If reached near the end of set 2, shift back to set 1 without visual interruption
+    if (container.scrollLeft >= singleSetWidth * 2) {
+      container.scrollLeft -= singleSetWidth
+    } else if (container.scrollLeft <= 10) {
+      container.scrollLeft += singleSetWidth
+    }
+
+    // Determine currently displayed product index (0 to productList.length - 1)
+    const normalizedScroll = (container.scrollLeft % singleSetWidth) + cardWidth * 0.3
+    const index = Math.floor(normalizedScroll / cardWidth) % productList.length
+    setCurrentIndex(Math.max(0, index))
   }
 
-  const scrollToSlide = (index) => {
-    if (carouselRef.current) {
-      const cardWidth = carouselRef.current.clientWidth * 0.8
-      carouselRef.current.scrollTo({
-        left: index * cardWidth,
-        behavior: 'smooth',
-      })
-      setCurrentSlide(index)
-    }
+  // Smooth Auto-Play Reel: Advances to next product every 3.5 seconds when not touched
+  useEffect(() => {
+    if (isInteracting) return
+
+    const interval = setInterval(() => {
+      if (!carouselRef.current) return
+      const { cardWidth } = getCardMetrics()
+      carouselRef.current.scrollBy({ left: cardWidth, behavior: 'smooth' })
+    }, 3500)
+
+    return () => clearInterval(interval)
+  }, [isInteracting, getCardMetrics])
+
+  // Touch & Drag interaction handlers to pause autoplay smoothly
+  const handleTouchStart = () => {
+    setIsInteracting(true)
+    if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current)
   }
+
+  const handleTouchEnd = () => {
+    if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current)
+    touchTimeoutRef.current = setTimeout(() => {
+      setIsInteracting(false)
+    }, 3000)
+  }
+
+  // Manual Prev / Next arrow buttons for mobile
+  const handleManualNav = (direction) => {
+    if (!carouselRef.current) return
+    setIsInteracting(true)
+    const { cardWidth } = getCardMetrics()
+    carouselRef.current.scrollBy({
+      left: direction * cardWidth,
+      behavior: 'smooth',
+    })
+    if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current)
+    touchTimeoutRef.current = setTimeout(() => {
+      setIsInteracting(false)
+    }, 4000)
+  }
+
+  const activeProduct = productList[currentIndex] || productList[0]
 
   return (
     <section className="relative overflow-hidden bg-[#FAF8F5] pt-20 sm:pt-28 pb-12 sm:pb-20">
@@ -143,9 +226,8 @@ export default function Hero() {
               Discover certified High-Fidelity Audio, Aerospace Titanium Wearables, and GaN Hyper-Fast Charging engineered for uncompromising acoustic purity and lasting endurance.
             </p>
 
-            {/* Dual CTAs (Full-width on small mobile, inline on tablet/desktop) */}
+            {/* Dual CTAs */}
             <div className="mt-6 sm:mt-7 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              {/* Primary Crimson Button */}
               <button
                 onClick={handleScrollToProducts}
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-[#991B33] hover:bg-[#7E1227] text-white px-6 py-3.5 text-xs sm:text-sm font-bold tracking-wide transition-all shadow-md shadow-[#991B33]/20 hover:shadow-lg hover:shadow-[#991B33]/30 active:scale-98 cursor-pointer"
@@ -153,8 +235,6 @@ export default function Hero() {
                 <span>Shop Flagship Devices</span>
                 <ArrowRight className="h-4 w-4" />
               </button>
-
-              {/* Secondary Bordered White Button */}
               <button
                 onClick={handleScrollToProducts}
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-[#E7E2D9] bg-white hover:bg-[#F4EFEA] text-[#1C1917] px-6 py-3.5 text-xs sm:text-sm font-bold tracking-wide transition-all shadow-xs hover:border-[#D6D0C5] active:scale-98 cursor-pointer"
@@ -163,41 +243,21 @@ export default function Hero() {
               </button>
             </div>
 
-            {/* Social Proof & Certified Strip (Matching Reference Image) */}
+            {/* Social Proof */}
             <div className="mt-8 pt-6 border-t border-[#EAE5DD] flex flex-wrap items-center justify-between gap-4">
-              {/* Tech Badges */}
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#78716C] block mb-1.5">
-                  Certified Architecture
-                </span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#78716C] block mb-1.5">Certified Architecture</span>
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white border border-[#E7E2D9] text-[#1C1917]">
-                    Hi-Res Audio
-                  </span>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white border border-[#E7E2D9] text-[#1C1917]">
-                    Dolby Atmos
-                  </span>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white border border-[#E7E2D9] text-[#1C1917]">
-                    Bluetooth 5.4
-                  </span>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white border border-[#E7E2D9] text-[#1C1917]">
-                    GaN III
-                  </span>
+                  {['Hi-Res Audio', 'Dolby Atmos', 'Bluetooth 5.4', 'GaN III'].map((t) => (
+                    <span key={t} className="px-2 py-0.5 rounded text-[10px] font-bold bg-white border border-[#E7E2D9] text-[#1C1917]">{t}</span>
+                  ))}
                 </div>
               </div>
-
-              {/* Rating Proof */}
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#78716C] block mb-1.5">
-                  Rated Excellent: 4.9/5
-                </span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#78716C] block mb-1.5">Rated Excellent: 4.9/5</span>
                 <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                  ))}
-                  <span className="text-[11px] font-bold text-[#1C1917] ml-1">
-                    12,400+ Verified
-                  </span>
+                  {[...Array(5)].map((_, i) => <Star key={i} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />)}
+                  <span className="text-[11px] font-bold text-[#1C1917] ml-1">12,400+ Verified</span>
                 </div>
               </div>
             </div>
@@ -209,289 +269,113 @@ export default function Hero() {
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
-            {/* ══════════════════════════════════════════════════════════════
-                MOBILE VIEW (< 1024px): NATIVE TOUCH-SWIPE BENTO RIBBON
-                - Horizontal snap scroll with zero vertical clutter
-                - Card 1: 78vw Hero Portrait Card
-                - Card 2: 74vw Stacked Mini-Bento Pair (Watch + GaN Charger)
-                - Card 3: 78vw Lifestyle Acoustic Monitor Card
-                - Micro-dots pagination and swipe prompt
-               ══════════════════════════════════════════════════════════════ */}
+            {/* MOBILE VIEW: INFINITE SHOWCASE BENTO RIBBON */}
             <div className="lg:hidden">
-              {/* Swipe Prompt Header */}
               <div className="flex items-center justify-between mb-3 px-1">
-                <span className="text-xs font-bold text-[#1C1917] flex items-center gap-1.5">
-                  <Sparkles className="h-3.5 w-3.5 text-[#991B33]" />
-                  <span>Flagship Bento Showcase</span>
-                </span>
-                <span className="text-[11px] font-semibold text-[#78716C]">
-                  Swipe horizontally →
+                <div className="flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-[#991B33] animate-ping" />
+                  <span className="text-xs font-bold text-[#1C1917]">Flagship Showcase</span>
+                </div>
+                <span className="text-xs font-bold text-[#1C1917] font-mono bg-white px-2.5 py-0.5 rounded-full border border-[#E7E2D9] shadow-2xs">
+                  {String(currentIndex + 1).padStart(2, '0')} / {String(productList.length).padStart(2, '0')}
                 </span>
               </div>
 
-              {/* Horizontal Touch Snap Scrollable Container */}
               <div
                 ref={carouselRef}
-                onScroll={handleCarouselScroll}
-                className="flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-3 pt-1 -mx-4 px-4 scroll-smooth"
+                onScroll={handleScroll}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+                onMouseEnter={() => setIsInteracting(true)}
+                onMouseLeave={() => setIsInteracting(false)}
+                className="flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-3 pt-1 -mx-4 px-4"
                 style={{ WebkitOverflowScrolling: 'touch' }}
               >
-                {/* ── Mobile Card 1: Flagship Hero Portrait (AeroPro ANC) ── */}
-                <div className="w-[78vw] max-w-[320px] flex-shrink-0 snap-center">
-                  <div
-                    onClick={() => handleQuickAdd(BENTO_ITEMS[0])}
-                    className="relative aspect-[4/5] w-full rounded-3xl overflow-hidden border border-[#E7E2D9] shadow-lg bg-stone-100 cursor-pointer active:scale-98 transition-transform"
-                  >
-                    <img
-                      src={BENTO_ITEMS[0].image}
-                      alt={BENTO_ITEMS[0].name}
-                      className="h-full w-full object-cover"
-                      loading="eager"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/10" />
-
-                    {/* Top Micro Badges */}
-                    <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between z-10">
-                      <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-[#991B33] text-white shadow-xs">
-                        {BENTO_ITEMS[0].badge}
-                      </span>
-                      <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/90 backdrop-blur-md text-[#1C1917] border border-white/40">
-                        {BENTO_ITEMS[0].tag}
-                      </span>
-                    </div>
-
-                    {/* Bottom Details & Quick Add */}
-                    <div className="absolute bottom-3.5 left-3.5 right-3.5 z-10">
-                      <h3 className="font-serif text-base font-bold text-white leading-tight">
-                        {BENTO_ITEMS[0].name}
-                      </h3>
-                      <p className="text-[11px] text-white/80 mt-0.5 line-clamp-1">
-                        {BENTO_ITEMS[0].subtitle}
-                      </p>
-                      <div className="mt-2.5 flex items-center justify-between">
-                        <div className="flex items-baseline gap-1.5">
-                          <span className="font-serif text-lg font-bold text-white">
-                            ₹{BENTO_ITEMS[0].price}
-                          </span>
-                          <span className="text-xs text-white/60 line-through">
-                            ₹{BENTO_ITEMS[0].originalPrice}
-                          </span>
-                        </div>
-                        <button
-                          onClick={(e) => handleQuickAdd(BENTO_ITEMS[0], e)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white text-[#1C1917] hover:bg-stone-100 text-xs font-bold tracking-wide shadow-xs cursor-pointer active:scale-95"
-                        >
-                          <ShoppingBag className="h-3 w-3 text-[#991B33]" />
-                          <span>Add</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* ── Mobile Card 2: Stacked Mini-Bento Pair (Watch + GaN Charger) ── */}
-                <div className="w-[74vw] max-w-[290px] flex-shrink-0 snap-center flex flex-col gap-3 justify-between">
-                  {/* Top Mini: Titanium Smartwatch */}
-                  <div
-                    onClick={() => handleQuickAdd(BENTO_ITEMS[1])}
-                    className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden border border-[#E7E2D9] shadow-md bg-stone-100 cursor-pointer active:scale-98 transition-transform"
-                  >
-                    <img
-                      src={BENTO_ITEMS[1].image}
-                      alt={BENTO_ITEMS[1].name}
-                      className="h-full w-full object-cover"
-                      loading="eager"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
-                    
-                    <div className="absolute top-2.5 left-2.5 z-10">
-                      <span className="px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-white/90 backdrop-blur-md text-[#1C1917]">
-                        {BENTO_ITEMS[1].badge}
-                      </span>
-                    </div>
-
-                    <div className="absolute bottom-2.5 left-2.5 right-2.5 z-10 flex items-center justify-between">
-                      <div>
-                        <h4 className="font-serif text-xs font-bold text-white line-clamp-1">
-                          {BENTO_ITEMS[1].name}
-                        </h4>
-                        <span className="text-xs font-bold text-amber-300">
-                          ₹{BENTO_ITEMS[1].price}
-                        </span>
-                      </div>
-                      <button
-                        onClick={(e) => handleQuickAdd(BENTO_ITEMS[1], e)}
-                        className="p-1.5 rounded-full bg-white text-[#1C1917] hover:bg-stone-100 shadow-xs cursor-pointer"
-                        title="Add to Bag"
+                {infiniteList.map((product, idx) => {
+                  const isCurrent = idx % productList.length === currentIndex
+                  return (
+                    <div
+                      key={`${product.id}-${idx}`}
+                      data-bento-card="true"
+                      className="w-[78vw] max-w-[315px] flex-shrink-0 snap-center"
+                    >
+                      <div
+                        onClick={() => handleQuickAdd(product)}
+                        className={`relative aspect-[4/5] w-full rounded-3xl overflow-hidden border shadow-lg bg-stone-100 cursor-pointer active:scale-98 transition-all duration-300 ${
+                          isCurrent ? 'border-[#991B33]/60 shadow-xl shadow-[#991B33]/10' : 'border-[#E7E2D9]'
+                        }`}
                       >
-                        <ShoppingBag className="h-3 w-3 text-[#991B33]" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Bottom Mini: GaN 140W Charger */}
-                  <div
-                    onClick={() => handleQuickAdd(BENTO_ITEMS[2])}
-                    className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden border border-[#E7E2D9] shadow-md bg-stone-100 cursor-pointer active:scale-98 transition-transform"
-                  >
-                    <img
-                      src={BENTO_ITEMS[2].image}
-                      alt={BENTO_ITEMS[2].name}
-                      className="h-full w-full object-cover"
-                      loading="eager"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
-
-                    <div className="absolute top-2.5 left-2.5 z-10">
-                      <span className="px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-white/90 backdrop-blur-md text-[#1C1917]">
-                        {BENTO_ITEMS[2].badge}
-                      </span>
-                    </div>
-
-                    <div className="absolute bottom-2.5 left-2.5 right-2.5 z-10 flex items-center justify-between">
-                      <div>
-                        <h4 className="font-serif text-xs font-bold text-white line-clamp-1">
-                          {BENTO_ITEMS[2].name}
-                        </h4>
-                        <span className="text-xs font-bold text-amber-300">
-                          ₹{BENTO_ITEMS[2].price}
-                        </span>
-                      </div>
-                      <button
-                        onClick={(e) => handleQuickAdd(BENTO_ITEMS[2], e)}
-                        className="p-1.5 rounded-full bg-white text-[#1C1917] hover:bg-stone-100 shadow-xs cursor-pointer"
-                        title="Add to Bag"
-                      >
-                        <ShoppingBag className="h-3 w-3 text-[#991B33]" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* ── Mobile Card 3: Hi-Fi Studio Monitors (Portrait) ── */}
-                <div className="w-[78vw] max-w-[320px] flex-shrink-0 snap-center">
-                  <div
-                    onClick={() => handleQuickAdd(BENTO_ITEMS[3])}
-                    className="relative aspect-[4/5] w-full rounded-3xl overflow-hidden border border-[#E7E2D9] shadow-lg bg-stone-100 cursor-pointer active:scale-98 transition-transform"
-                  >
-                    <img
-                      src={BENTO_ITEMS[3].image}
-                      alt={BENTO_ITEMS[3].name}
-                      className="h-full w-full object-cover"
-                      loading="eager"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/10" />
-
-                    <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between z-10">
-                      <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-[#1C1917] text-white shadow-xs">
-                        {BENTO_ITEMS[3].badge}
-                      </span>
-                      <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/90 backdrop-blur-md text-[#1C1917] border border-white/40">
-                        {BENTO_ITEMS[3].tag}
-                      </span>
-                    </div>
-
-                    <div className="absolute bottom-3.5 left-3.5 right-3.5 z-10">
-                      <h3 className="font-serif text-base font-bold text-white leading-tight">
-                        {BENTO_ITEMS[3].name}
-                      </h3>
-                      <p className="text-[11px] text-white/80 mt-0.5 line-clamp-1">
-                        {BENTO_ITEMS[3].subtitle}
-                      </p>
-                      <div className="mt-2.5 flex items-center justify-between">
-                        <div className="flex items-baseline gap-1.5">
-                          <span className="font-serif text-lg font-bold text-white">
-                            ₹{BENTO_ITEMS[3].price}
-                          </span>
-                          <span className="text-xs text-white/60 line-through">
-                            ₹{BENTO_ITEMS[3].originalPrice}
-                          </span>
+                        <img src={product.image} alt={product.name} className="h-full w-full object-cover" loading="eager" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-black/10" />
+                        <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between z-10">
+                          <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-[#991B33] text-white shadow-xs">{product.badge || 'TECH'}</span>
                         </div>
-                        <button
-                          onClick={(e) => handleQuickAdd(BENTO_ITEMS[3], e)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white text-[#1C1917] hover:bg-stone-100 text-xs font-bold tracking-wide shadow-xs cursor-pointer active:scale-95"
-                        >
-                          <ShoppingBag className="h-3 w-3 text-[#991B33]" />
-                          <span>Add</span>
-                        </button>
+                        <div className="absolute bottom-3.5 left-3.5 right-3.5 z-10">
+                          <h3 className="font-serif text-base font-bold text-white leading-tight line-clamp-1">{product.name}</h3>
+                          <div className="mt-2.5 flex items-center justify-between">
+                            <span className="font-serif text-lg font-bold text-white">₹{product.price}</span>
+                            <button onClick={(e) => handleQuickAdd(product, e)} className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white text-[#1C1917] hover:bg-stone-100 text-xs font-bold tracking-wide shadow-sm">
+                              <ShoppingBag className="h-3.5 w-3.5 text-[#991B33]" />
+                              <span>Add</span>
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
+                  )
+                })}
               </div>
 
-              {/* Mobile Pagination Micro-Dots */}
-              <div className="flex items-center justify-center gap-2 mt-3">
-                {[0, 1, 2].map((idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => scrollToSlide(idx)}
-                    className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                      currentSlide === idx
-                        ? 'w-6 bg-[#991B33]'
-                        : 'w-2 bg-[#D6D0C5] hover:bg-[#A8A29E]'
-                    }`}
-                    aria-label={`Go to slide ${idx + 1}`}
-                  />
-                ))}
+              <div className="flex items-center justify-between mt-3 px-1">
+                <button onClick={() => handleManualNav(-1)} className="p-2 rounded-full bg-white border border-[#E7E2D9] text-[#1C1917] shadow-xs"><ChevronLeft className="h-4 w-4" /></button>
+                <div className="flex-1 px-4"><div className="w-full h-1.5 bg-[#EAE5DD] rounded-full overflow-hidden"><div className="h-full bg-[#991B33] transition-all duration-300" style={{ width: `${((currentIndex + 1) / productList.length) * 100}%` }} /></div></div>
+                <button onClick={() => handleManualNav(1)} className="p-2 rounded-full bg-white border border-[#E7E2D9] text-[#1C1917] shadow-xs"><ChevronRight className="h-4 w-4" /></button>
               </div>
             </div>
 
-            {/* ══════════════════════════════════════════════════════════════
-                DESKTOP VIEW (lg:): DUAL-COLUMN STAGGERED MASONRY BENTO GRID
-                - Matches the exact visual hierarchy from the reference image
-                - Column 1: Tall headphones card + GaN charger + Studio monitors
-                - Column 2 (staggered down): Titanium watch + Earbuds + Soundbar
-                - Crisp rounded-3xl corners, glass badges, and smooth hover zoom
-               ══════════════════════════════════════════════════════════════ */}
+            {/* DESKTOP VIEW: DUAL-COLUMN STAGGERED MASONRY BENTO GRID */}
             <div className="hidden lg:grid grid-cols-2 gap-3.5 xl:gap-4.5">
-              
-              {/* ── Left Staggered Column ── */}
+              {/* Left Staggered Column */}
               <div className="space-y-3.5 xl:space-y-4.5">
-                
-                {/* 1. AeroPro Studio ANC Headphones (Tall Primary Card) */}
+                {/* 1. AeroPro Studio ANC Headphones */}
                 <div
-                  onClick={() => handleQuickAdd(BENTO_ITEMS[0])}
+                  onClick={() => handleQuickAdd(DESKTOP_BENTO_ITEMS[0])}
                   className="group relative h-[280px] xl:h-[300px] w-full rounded-3xl overflow-hidden border border-[#E7E2D9] shadow-md bg-stone-100 cursor-pointer transition-all duration-300 hover:shadow-xl hover:border-[#991B33]/40"
                 >
                   <img
-                    src={BENTO_ITEMS[0].image}
-                    alt={BENTO_ITEMS[0].name}
+                    src={DESKTOP_BENTO_ITEMS[0].image}
+                    alt={DESKTOP_BENTO_ITEMS[0].name}
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="eager"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/5" />
-
-                  {/* Top Badges */}
                   <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between z-10">
                     <span className="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-[#991B33] text-white shadow-xs">
-                      {BENTO_ITEMS[0].badge}
+                      {DESKTOP_BENTO_ITEMS[0].badge}
                     </span>
                     <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/90 backdrop-blur-md text-[#1C1917] border border-white/40">
-                      {BENTO_ITEMS[0].tag}
+                      {DESKTOP_BENTO_ITEMS[0].tag}
                     </span>
                   </div>
-
-                  {/* Bottom Info Bar */}
                   <div className="absolute bottom-3.5 left-3.5 right-3.5 z-10 flex items-end justify-between">
                     <div>
                       <h3 className="font-serif text-base xl:text-lg font-bold text-white leading-tight">
-                        {BENTO_ITEMS[0].name}
+                        {DESKTOP_BENTO_ITEMS[0].name}
                       </h3>
                       <p className="text-xs text-white/80 mt-0.5 font-sans">
-                        {BENTO_ITEMS[0].subtitle}
+                        {DESKTOP_BENTO_ITEMS[0].subtitle}
                       </p>
                       <div className="mt-1 flex items-baseline gap-2">
                         <span className="font-serif text-lg font-bold text-white">
-                          ₹{BENTO_ITEMS[0].price}
+                          ₹{DESKTOP_BENTO_ITEMS[0].price}
                         </span>
                         <span className="text-xs text-white/60 line-through">
-                          ₹{BENTO_ITEMS[0].originalPrice}
+                          ₹{DESKTOP_BENTO_ITEMS[0].originalPrice}
                         </span>
                       </div>
                     </div>
                     <button
-                      onClick={(e) => handleQuickAdd(BENTO_ITEMS[0], e)}
+                      onClick={(e) => handleQuickAdd(DESKTOP_BENTO_ITEMS[0], e)}
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white hover:bg-stone-100 text-[#1C1917] text-xs font-bold tracking-wide shadow-sm transition-all transform group-hover:scale-105 active:scale-95"
                     >
                       <ShoppingBag className="h-3.5 w-3.5 text-[#991B33]" />
@@ -500,36 +384,34 @@ export default function Hero() {
                   </div>
                 </div>
 
-                {/* 2. HyperGaN 140W Desktop Charger (Compact Landscape Card) */}
+                {/* 2. HyperGaN 140W Desktop Charger */}
                 <div
-                  onClick={() => handleQuickAdd(BENTO_ITEMS[2])}
+                  onClick={() => handleQuickAdd(DESKTOP_BENTO_ITEMS[2])}
                   className="group relative h-[180px] xl:h-[195px] w-full rounded-3xl overflow-hidden border border-[#E7E2D9] shadow-md bg-stone-100 cursor-pointer transition-all duration-300 hover:shadow-xl hover:border-[#991B33]/40"
                 >
                   <img
-                    src={BENTO_ITEMS[2].image}
-                    alt={BENTO_ITEMS[2].name}
+                    src={DESKTOP_BENTO_ITEMS[2].image}
+                    alt={DESKTOP_BENTO_ITEMS[2].name}
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/10" />
-
                   <div className="absolute top-3 left-3 z-10">
                     <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/90 backdrop-blur-md text-[#1C1917]">
-                      {BENTO_ITEMS[2].badge}
+                      {DESKTOP_BENTO_ITEMS[2].badge}
                     </span>
                   </div>
-
                   <div className="absolute bottom-3 left-3 right-3 z-10 flex items-end justify-between">
                     <div>
                       <h4 className="font-serif text-sm xl:text-base font-bold text-white line-clamp-1">
-                        {BENTO_ITEMS[2].name}
+                        {DESKTOP_BENTO_ITEMS[2].name}
                       </h4>
                       <span className="font-serif text-sm font-bold text-amber-300">
-                        ₹{BENTO_ITEMS[2].price}
+                        ₹{DESKTOP_BENTO_ITEMS[2].price}
                       </span>
                     </div>
                     <button
-                      onClick={(e) => handleQuickAdd(BENTO_ITEMS[2], e)}
+                      onClick={(e) => handleQuickAdd(DESKTOP_BENTO_ITEMS[2], e)}
                       className="p-2 rounded-full bg-white hover:bg-stone-100 text-[#1C1917] shadow-sm transition-transform group-hover:scale-105 active:scale-95"
                       title="Add to Bag"
                     >
@@ -538,36 +420,34 @@ export default function Hero() {
                   </div>
                 </div>
 
-                {/* 3. SonicPulse Studio Monitors (Acoustic Card) */}
+                {/* 3. SonicPulse Studio Monitors */}
                 <div
-                  onClick={() => handleQuickAdd(BENTO_ITEMS[3])}
+                  onClick={() => handleQuickAdd(DESKTOP_BENTO_ITEMS[3])}
                   className="group relative h-[210px] xl:h-[225px] w-full rounded-3xl overflow-hidden border border-[#E7E2D9] shadow-md bg-stone-100 cursor-pointer transition-all duration-300 hover:shadow-xl hover:border-[#991B33]/40"
                 >
                   <img
-                    src={BENTO_ITEMS[3].image}
-                    alt={BENTO_ITEMS[3].name}
+                    src={DESKTOP_BENTO_ITEMS[3].image}
+                    alt={DESKTOP_BENTO_ITEMS[3].name}
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/10" />
-
                   <div className="absolute top-3 left-3 z-10">
                     <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#1C1917] text-white">
-                      {BENTO_ITEMS[3].badge}
+                      {DESKTOP_BENTO_ITEMS[3].badge}
                     </span>
                   </div>
-
                   <div className="absolute bottom-3 left-3 right-3 z-10 flex items-end justify-between">
                     <div>
                       <h4 className="font-serif text-sm xl:text-base font-bold text-white line-clamp-1">
-                        {BENTO_ITEMS[3].name}
+                        {DESKTOP_BENTO_ITEMS[3].name}
                       </h4>
                       <span className="font-serif text-sm font-bold text-white">
-                        ₹{BENTO_ITEMS[3].price}
+                        ₹{DESKTOP_BENTO_ITEMS[3].price}
                       </span>
                     </div>
                     <button
-                      onClick={(e) => handleQuickAdd(BENTO_ITEMS[3], e)}
+                      onClick={(e) => handleQuickAdd(DESKTOP_BENTO_ITEMS[3], e)}
                       className="p-2 rounded-full bg-white hover:bg-stone-100 text-[#1C1917] shadow-sm transition-transform group-hover:scale-105 active:scale-95"
                       title="Add to Bag"
                     >
@@ -577,45 +457,42 @@ export default function Hero() {
                 </div>
               </div>
 
-              {/* ── Right Staggered Column (Shifted Downwards for Masonry Rhythm) ── */}
+              {/* Right Staggered Column */}
               <div className="space-y-3.5 xl:space-y-4.5 pt-6 xl:pt-8">
-                
-                {/* 4. PulseSync Ultra Titanium Smartwatch (Portrait Card) */}
+                {/* 4. PulseSync Ultra Titanium Smartwatch */}
                 <div
-                  onClick={() => handleQuickAdd(BENTO_ITEMS[1])}
+                  onClick={() => handleQuickAdd(DESKTOP_BENTO_ITEMS[1])}
                   className="group relative h-[250px] xl:h-[270px] w-full rounded-3xl overflow-hidden border border-[#E7E2D9] shadow-md bg-stone-100 cursor-pointer transition-all duration-300 hover:shadow-xl hover:border-[#991B33]/40"
                 >
                   <img
-                    src={BENTO_ITEMS[1].image}
-                    alt={BENTO_ITEMS[1].name}
+                    src={DESKTOP_BENTO_ITEMS[1].image}
+                    alt={DESKTOP_BENTO_ITEMS[1].name}
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="eager"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/5" />
-
                   <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between z-10">
                     <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-[#1C1917] text-white">
-                      {BENTO_ITEMS[1].badge}
+                      {DESKTOP_BENTO_ITEMS[1].badge}
                     </span>
                     <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/90 backdrop-blur-md text-[#1C1917]">
-                      {BENTO_ITEMS[1].tag}
+                      {DESKTOP_BENTO_ITEMS[1].tag}
                     </span>
                   </div>
-
                   <div className="absolute bottom-3.5 left-3.5 right-3.5 z-10 flex items-end justify-between">
                     <div>
                       <h3 className="font-serif text-base xl:text-lg font-bold text-white leading-tight">
-                        {BENTO_ITEMS[1].name}
+                        {DESKTOP_BENTO_ITEMS[1].name}
                       </h3>
                       <p className="text-xs text-white/80 mt-0.5 font-sans">
-                        {BENTO_ITEMS[1].subtitle}
+                        {DESKTOP_BENTO_ITEMS[1].subtitle}
                       </p>
                       <span className="font-serif text-lg font-bold text-amber-300 mt-1 block">
-                        ₹{BENTO_ITEMS[1].price}
+                        ₹{DESKTOP_BENTO_ITEMS[1].price}
                       </span>
                     </div>
                     <button
-                      onClick={(e) => handleQuickAdd(BENTO_ITEMS[1], e)}
+                      onClick={(e) => handleQuickAdd(DESKTOP_BENTO_ITEMS[1], e)}
                       className="p-2 rounded-full bg-white hover:bg-stone-100 text-[#1C1917] shadow-sm transition-transform group-hover:scale-105 active:scale-95"
                       title="Add to Bag"
                     >
@@ -624,36 +501,34 @@ export default function Hero() {
                   </div>
                 </div>
 
-                {/* 5. QuantumBass Pro True Wireless Earbuds (Compact Card) */}
+                {/* 5. QuantumBass Pro True Wireless Earbuds */}
                 <div
-                  onClick={() => handleQuickAdd(BENTO_ITEMS[4])}
+                  onClick={() => handleQuickAdd(DESKTOP_BENTO_ITEMS[4])}
                   className="group relative h-[190px] xl:h-[205px] w-full rounded-3xl overflow-hidden border border-[#E7E2D9] shadow-md bg-stone-100 cursor-pointer transition-all duration-300 hover:shadow-xl hover:border-[#991B33]/40"
                 >
                   <img
-                    src={BENTO_ITEMS[4].image}
-                    alt={BENTO_ITEMS[4].name}
+                    src={DESKTOP_BENTO_ITEMS[4].image}
+                    alt={DESKTOP_BENTO_ITEMS[4].name}
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/10" />
-
                   <div className="absolute top-3 left-3 z-10">
                     <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/90 backdrop-blur-md text-[#1C1917]">
-                      {BENTO_ITEMS[4].badge}
+                      {DESKTOP_BENTO_ITEMS[4].badge}
                     </span>
                   </div>
-
                   <div className="absolute bottom-3 left-3 right-3 z-10 flex items-end justify-between">
                     <div>
                       <h4 className="font-serif text-sm xl:text-base font-bold text-white line-clamp-1">
-                        {BENTO_ITEMS[4].name}
+                        {DESKTOP_BENTO_ITEMS[4].name}
                       </h4>
                       <span className="font-serif text-sm font-bold text-white">
-                        ₹{BENTO_ITEMS[4].price}
+                        ₹{DESKTOP_BENTO_ITEMS[4].price}
                       </span>
                     </div>
                     <button
-                      onClick={(e) => handleQuickAdd(BENTO_ITEMS[4], e)}
+                      onClick={(e) => handleQuickAdd(DESKTOP_BENTO_ITEMS[4], e)}
                       className="p-2 rounded-full bg-white hover:bg-stone-100 text-[#1C1917] shadow-sm transition-transform group-hover:scale-105 active:scale-95"
                       title="Add to Bag"
                     >
@@ -662,36 +537,34 @@ export default function Hero() {
                   </div>
                 </div>
 
-                {/* 6. EchoBar 120W Dolby Atmos Soundbar (Landscape Card) */}
+                {/* 6. EchoBar 120W Dolby Atmos Soundbar */}
                 <div
-                  onClick={() => handleQuickAdd(BENTO_ITEMS[5])}
+                  onClick={() => handleQuickAdd(DESKTOP_BENTO_ITEMS[5])}
                   className="group relative h-[210px] xl:h-[225px] w-full rounded-3xl overflow-hidden border border-[#E7E2D9] shadow-md bg-stone-100 cursor-pointer transition-all duration-300 hover:shadow-xl hover:border-[#991B33]/40"
                 >
                   <img
-                    src={BENTO_ITEMS[5].image}
-                    alt={BENTO_ITEMS[5].name}
+                    src={DESKTOP_BENTO_ITEMS[5].image}
+                    alt={DESKTOP_BENTO_ITEMS[5].name}
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/10" />
-
                   <div className="absolute top-3 left-3 z-10">
                     <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#991B33] text-white">
-                      {BENTO_ITEMS[5].badge}
+                      {DESKTOP_BENTO_ITEMS[5].badge}
                     </span>
                   </div>
-
                   <div className="absolute bottom-3 left-3 right-3 z-10 flex items-end justify-between">
                     <div>
                       <h4 className="font-serif text-sm xl:text-base font-bold text-white line-clamp-1">
-                        {BENTO_ITEMS[5].name}
+                        {DESKTOP_BENTO_ITEMS[5].name}
                       </h4>
                       <span className="font-serif text-sm font-bold text-white">
-                        ₹{BENTO_ITEMS[5].price}
+                        ₹{DESKTOP_BENTO_ITEMS[5].price}
                       </span>
                     </div>
                     <button
-                      onClick={(e) => handleQuickAdd(BENTO_ITEMS[5], e)}
+                      onClick={(e) => handleQuickAdd(DESKTOP_BENTO_ITEMS[5], e)}
                       className="p-2 rounded-full bg-white hover:bg-stone-100 text-[#1C1917] shadow-sm transition-transform group-hover:scale-105 active:scale-95"
                       title="Add to Bag"
                     >
@@ -699,10 +572,8 @@ export default function Hero() {
                     </button>
                   </div>
                 </div>
-
               </div>
             </div>
-
           </div>
         </div>
 
