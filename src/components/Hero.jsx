@@ -219,25 +219,25 @@ export default function Hero() {
 
         {/* ──────── MOBILE: Compact Centered Hero with Indian Social Proof ──────── */}
         <div
-          className={`flex flex-col items-center justify-center text-center pt-28 pb-5 lg:hidden transition-all duration-700 ${
+          className={`flex flex-col items-center justify-center text-center min-h-[calc(100svh-140px)] pt-36 pb-6 lg:hidden transition-all duration-700 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
           {/* Realistic Indian-Oriented Social Proof Pill */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/95 border border-[#E7E2D9] shadow-xs mb-3 backdrop-blur-sm">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 border border-[#E7E2D9] shadow-xs mb-4 backdrop-blur-sm">
             <div className="flex -space-x-1.5 overflow-hidden">
               <img
-                className="inline-block h-4 w-4 rounded-full ring-1 ring-white object-cover"
+                className="inline-block h-4.5 w-4.5 rounded-full ring-1.5 ring-white object-cover"
                 src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
                 alt="Buyer review"
               />
               <img
-                className="inline-block h-4 w-4 rounded-full ring-1 ring-white object-cover"
+                className="inline-block h-4.5 w-4.5 rounded-full ring-1.5 ring-white object-cover"
                 src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80"
                 alt="Buyer review"
               />
               <img
-                className="inline-block h-4 w-4 rounded-full ring-1 ring-white object-cover"
+                className="inline-block h-4.5 w-4.5 rounded-full ring-1.5 ring-white object-cover"
                 src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80"
                 alt="Buyer review"
               />
@@ -257,7 +257,7 @@ export default function Hero() {
           </h1>
 
           {/* Dual CTAs (Side by side for mobile vertical compactness) */}
-          <div className="mt-4 flex items-center justify-center gap-2.5 w-full max-w-xs px-2">
+          <div className="mt-6 flex items-center justify-center gap-3 w-full max-w-xs px-2">
             <button
               onClick={handleScrollToProducts}
               className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-full bg-[#991B33] hover:bg-[#7E1227] text-white px-4 py-2.5 text-xs font-bold tracking-wide transition-all shadow-md shadow-[#991B33]/20 active:scale-98 cursor-pointer whitespace-nowrap"
@@ -274,11 +274,11 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* ──────── MOBILE VIEW (< 1024px): PEEK-A-BOO BENTO PATTERN (Lower half on first load) ──────── */}
-        <div className="lg:hidden pb-12 pt-1 overflow-hidden -mx-4 px-4">
+        {/* ──────── MOBILE VIEW (< 1024px): PEEK-A-BOO BENTO PATTERN (Exact 40% on first load) ──────── */}
+        <div className="lg:hidden pb-16 pt-2 overflow-hidden -mx-4 px-4">
           <div
             ref={carouselRef}
-            className="flex gap-3 overflow-x-hidden no-scrollbar pb-2 pt-1 h-[320px] sm:h-[340px] items-stretch"
+            className="flex gap-3 overflow-x-hidden no-scrollbar pb-2 pt-1 h-[340px] items-stretch"
           >
             {infiniteModules.map((mod, idx) => {
               // 1. Single Tall Card
