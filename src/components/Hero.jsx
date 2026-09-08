@@ -3,11 +3,6 @@ import {
   ArrowRight,
   MessageCircle,
   ShoppingBag,
-  Sparkles,
-  ChevronLeft,
-  ChevronRight,
-  Play,
-  Pause,
 } from 'lucide-react'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import { useCartStore, MOCK_PRODUCTS } from '../store/cartStore'
@@ -79,11 +74,7 @@ const DESKTOP_BENTO_ITEMS = [
 export default function Hero() {
   const [ref, isVisible] = useScrollReveal(0.05)
   const carouselRef = useRef(null)
-  const isInteractingRef = useRef(false)
   const singleSetWidthRef = useRef(0)
-  const touchTimeoutRef = useRef(null)
-
-  const [isAutoScrolling, setIsAutoScrolling] = useState(true)
 
   const rawProducts = useCartStore((s) => s.products) || MOCK_PRODUCTS
   const allProducts = rawProducts.filter((p) => !p.isHidden)
@@ -194,15 +185,15 @@ export default function Hero() {
     if (!el) return
 
     let animId
-    const scrollSpeed = 0.7 // Smooth, luxury drifting speed (~42px/sec)
+    const scrollSpeed = 0.8 // Smooth, continuous luxury drift (~48px/sec)
 
     const step = () => {
-      if (!isInteractingRef.current && el) {
+      if (el) {
         el.scrollLeft += scrollSpeed
 
         const setWidth = singleSetWidthRef.current
         if (setWidth > 0) {
-          // Seamless wrap around when passing boundaries
+          // Seamless infinite wrap around
           if (el.scrollLeft >= setWidth * 2) {
             el.scrollLeft -= setWidth
           } else if (el.scrollLeft <= 5) {
@@ -216,46 +207,6 @@ export default function Hero() {
     animId = requestAnimationFrame(step)
     return () => cancelAnimationFrame(animId)
   }, [])
-
-  // Touch & Mouse event handlers to pause auto-scroll during user interaction
-  const handleTouchStart = () => {
-    isInteractingRef.current = true
-    setIsAutoScrolling(false)
-    if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current)
-  }
-
-  const handleTouchEnd = () => {
-    if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current)
-    touchTimeoutRef.current = setTimeout(() => {
-      isInteractingRef.current = false
-      setIsAutoScrolling(true)
-    }, 2500)
-  }
-
-  const handleMouseEnter = () => {
-    isInteractingRef.current = true
-    setIsAutoScrolling(false)
-  }
-
-  const handleMouseLeave = () => {
-    isInteractingRef.current = false
-    setIsAutoScrolling(true)
-  }
-
-  const handleManualNav = (direction) => {
-    if (!carouselRef.current) return
-    isInteractingRef.current = true
-    setIsAutoScrolling(false)
-    carouselRef.current.scrollBy({
-      left: direction * 280,
-      behavior: 'smooth',
-    })
-    if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current)
-    touchTimeoutRef.current = setTimeout(() => {
-      isInteractingRef.current = false
-      setIsAutoScrolling(true)
-    }, 3000)
-  }
 
   return (
     <section className="relative overflow-hidden bg-[#FAF8F5] pt-20 sm:pt-28 pb-12 sm:pb-20">
@@ -326,12 +277,7 @@ export default function Hero() {
             <div className="lg:hidden">
               <div
                 ref={carouselRef}
-                onTouchStart={handleTouchStart}
-                onTouchEnd={handleTouchEnd}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-                className="flex gap-3 overflow-x-auto no-scrollbar pb-2 pt-1 -mx-4 px-4 h-[340px] items-stretch cursor-grab active:cursor-grabbing"
-                style={{ WebkitOverflowScrolling: 'touch' }}
+                className="flex gap-3 overflow-x-hidden no-scrollbar pb-2 pt-1 -mx-4 px-4 h-[340px] items-stretch"
               >
                 {infiniteModules.map((mod, idx) => {
                   // 1. Single Tall Card
@@ -482,32 +428,6 @@ export default function Hero() {
                     </div>
                   )
                 })}
-              </div>
-
-              {/* Irregular Bento Auto-Scroll Indicator & Manual Arrow Buttons */}
-              <div className="flex items-center justify-between mt-2.5 px-1">
-                <button
-                  onClick={() => handleManualNav(-1)}
-                  className="p-2 rounded-full bg-white border border-[#E7E2D9] text-[#1C1917] shadow-xs cursor-pointer active:scale-95 hover:bg-stone-50 transition-all"
-                  aria-label="Previous Bento Module"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </button>
-
-                <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-[#991B33] animate-pulse" />
-                  <span className="text-[11px] font-bold text-[#78716C] tracking-wide">
-                    {isAutoScrolling ? 'Continuous Auto-Scroll Active' : 'Touch Control Active'}
-                  </span>
-                </div>
-
-                <button
-                  onClick={() => handleManualNav(1)}
-                  className="p-2 rounded-full bg-white border border-[#E7E2D9] text-[#1C1917] shadow-xs cursor-pointer active:scale-95 hover:bg-stone-50 transition-all"
-                  aria-label="Next Bento Module"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </button>
               </div>
             </div>
 
