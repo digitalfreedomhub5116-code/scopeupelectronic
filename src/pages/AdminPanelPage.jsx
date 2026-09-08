@@ -433,8 +433,8 @@ export default function AdminPanelPage() {
 
   // Settings State
   const [settings, setSettings] = useState({
-    storeName: 'Scope Internationals',
-    contactEmail: 'support@scopeinternationals.com',
+    storeName: 'Scope International',
+    contactEmail: 'support@scopeinternational.com',
     contactPhone: '+91 98201 98201',
     defaultShippingFee: 60,
     freeShippingThreshold: 999,
@@ -501,7 +501,7 @@ export default function AdminPanelPage() {
               order_number: o.order_number || o.id,
               customer_name: o.customer_name || 'Collector',
               customer_phone: o.customer_phone || '+91 98765 00000',
-              customer_email: o.customer_email || 'orders@scopeinternationals.com',
+              customer_email: o.customer_email || 'orders@scopeinternational.com',
               shipping_address: o.shipping_address || {
                 address: 'Fulfillment Order',
                 city: 'Mumbai',
@@ -567,7 +567,7 @@ export default function AdminPanelPage() {
           orderId: targetOrder.db_id || targetOrder.id || orderId,
           orderNumber: targetOrder.order_number || targetOrder.id || orderId,
           orderData: targetOrder,
-          reason: 'Cancelled by seller in Scope Internationals Admin Portal',
+          reason: 'Cancelled by seller in Scope International Admin Portal',
         }),
       })
 
@@ -584,7 +584,7 @@ export default function AdminPanelPage() {
             return {
               ...o,
               status: 'CANCELLED',
-              cancellation_reason: 'Cancelled by seller in Scope Internationals Admin Portal',
+              cancellation_reason: 'Cancelled by seller in Scope International Admin Portal',
               cancelled_at: new Date().toISOString(),
             }
           }
@@ -715,7 +715,7 @@ export default function AdminPanelPage() {
             order_number: o.order_number || o.id,
             customer_name: o.customer_name || 'Collector',
             customer_phone: o.customer_phone || '+91 98765 00000',
-            customer_email: o.customer_email || 'orders@scopeinternationals.com',
+            customer_email: o.customer_email || 'orders@scopeinternational.com',
             shipping_address: o.shipping_address || {
               address: 'Fulfillment Order',
               city: 'Mumbai',
@@ -1210,7 +1210,7 @@ export default function AdminPanelPage() {
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-heading text-lg font-black tracking-[0.15em] text-cream">
-                  SCOPE INTERNATIONALS
+                  Scope International
                 </span>
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-gold/15 text-gold border border-gold/30 font-semibold tracking-wider">
                   ADMIN
@@ -1321,7 +1321,7 @@ export default function AdminPanelPage() {
                 )}
               </h1>
               <p className="text-xs text-cream-muted/60 hidden sm:block">
-                Scope Internationals Enterprise Dashboard • Realtime Synchronization
+                Scope International Enterprise Dashboard • Realtime Synchronization
               </p>
             </div>
           </div>
@@ -3191,13 +3191,13 @@ export default function AdminPanelPage() {
                     <input
                       type="text"
                       readOnly
-                      value={`${typeof window !== 'undefined' ? window.location.origin : 'https://scopeinternationals.com'}/api/shiprocket-webhook`}
+                      value={`${typeof window !== 'undefined' ? window.location.origin : 'https://scopeinternational.com'}/api/shiprocket-webhook`}
                       className="flex-1 px-3 py-2 rounded-lg bg-charcoal border border-charcoal-light text-xs font-mono text-cream focus:outline-none"
                     />
                     <button
                       type="button"
                       onClick={() => {
-                        const url = `${typeof window !== 'undefined' ? window.location.origin : 'https://scopeinternationals.com'}/api/shiprocket-webhook`
+                        const url = `${typeof window !== 'undefined' ? window.location.origin : 'https://scopeinternational.com'}/api/shiprocket-webhook`
                         navigator.clipboard?.writeText(url)
                         showToast('Shiprocket Webhook URL copied to clipboard!', 'success')
                       }}

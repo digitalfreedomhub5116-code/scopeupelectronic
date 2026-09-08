@@ -87,7 +87,7 @@ export default function AuthCallbackPage() {
     <div className="min-h-screen bg-[#FAF8F5] flex flex-col items-center justify-center text-[#1C1917] p-4 text-center">
       <div className="h-10 w-10 rounded-full border-2 border-[#991B33] border-t-transparent animate-spin mb-4" />
       <p className="text-sm font-heading font-semibold tracking-wide text-[#1C1917] mb-1">{statusText}</p>
-      <p className="text-xs text-[#78716C]">Securing your session with Scope Internationals Flagship Store...</p>
+      <p className="text-xs text-[#78716C]">Securing your session with Scope International Flagship Store...</p>
     </div>
   )
 }

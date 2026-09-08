@@ -49,7 +49,7 @@ export default function OrderTrackingPage() {
   const [searchLoading, setSearchLoading] = useState(false)
   const [notFound, setNotFound] = useState(false)
 
-  // 6 Checkpoints matching Scope Internationals fulfillment pipeline
+  // 6 Checkpoints matching Scope International fulfillment pipeline
   const STAGES = [
     {
       key: 'PLACED',
@@ -355,7 +355,7 @@ export default function OrderTrackingPage() {
               <ShoppingBag className="h-12 w-12 text-[#991B33]/60 mx-auto" />
               <h3 className="font-heading text-lg font-bold text-[#1C1917]">No orders placed yet</h3>
               <p className="text-xs text-[#78716C] max-w-sm mx-auto">
-                Once you place an order for Scope Internationals electronics, you can track testing, packaging, and delivery progress here.
+                Once you place an order for Scope International electronics, you can track testing, packaging, and delivery progress here.
               </p>
               <Link
                 to="/"
@@ -608,7 +608,7 @@ function OrderCard({
                     Cancellation Reason
                   </span>
                   <p className="text-[#1C1917] font-medium">
-                    {cancelDetails?.cancellation_reason || 'Cancelled by seller in Scope Internationals portal'}
+                    {cancelDetails?.cancellation_reason || 'Cancelled by seller in Scope International portal'}
                   </p>
                 </div>
 
@@ -650,7 +650,7 @@ function OrderCard({
                 </span>
                 <div className="flex items-center gap-3">
                   <a
-                    href={`mailto:support@scopeinternationals.com?subject=Help with Order ${order.order_number}`}
+                    href={`mailto:support@scopeinternational.com?subject=Help with Order ${order.order_number}`}
                     className="inline-flex items-center gap-1.5 text-[#991B33] hover:underline font-semibold cursor-pointer"
                   >
                     <Headphones className="h-3.5 w-3.5" />
@@ -676,7 +676,7 @@ function OrderCard({
                 <div className="pt-1">
                   <span className="font-mono text-xs text-[#991B33] font-bold italic">01</span>
                   <h5 className="font-heading text-sm font-bold text-[#1C1917]">Order Placed</h5>
-                  <p className="text-xs text-[#78716C]">Order confirmed on Scope Internationals</p>
+                  <p className="text-xs text-[#78716C]">Order confirmed on Scope International</p>
                 </div>
               </div>
 

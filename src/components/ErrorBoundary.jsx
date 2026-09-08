@@ -11,7 +11,7 @@ export class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    console.error('Scope Internationals UI Exception:', error, errorInfo)
+    console.error('Scope International UI Exception:', error, errorInfo)
   }
 
   handleReset = () => {

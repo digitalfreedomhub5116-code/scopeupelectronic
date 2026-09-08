@@ -22,7 +22,7 @@ export default function Footer() {
         }`}
       >
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Brand Column */}
+          {/* Brand Logo & Name */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Link to="/" className="flex items-center gap-2.5">
               <div className="h-8 w-8 rounded-full bg-[#1C1917] flex items-center justify-center text-white font-serif font-bold text-xs">
@@ -30,7 +30,7 @@ export default function Footer() {
               </div>
               <div className="flex items-baseline gap-1 font-serif text-base font-bold tracking-wider">
                 <span className="text-[#1C1917]">SCOPE</span>
-                <span className="text-[#991B33]">INTERNATIONALS</span>
+                <span className="text-[#991B33]">INTERNATIONAL</span>
               </div>
             </Link>
             <p className="mt-3.5 max-w-xs text-xs sm:text-sm leading-relaxed text-[#78716C]">
@@ -111,7 +111,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="mt-12 flex flex-col items-center gap-3 border-t border-[#E7E2D9] pt-6 sm:flex-row sm:justify-between">
           <p className="text-xs text-[#78716C]">
-            © 2026 Scope Internationals. All rights reserved. Flagship consumer electronics & acoustics.
+            © 2026 Scope International. All rights reserved. Flagship consumer electronics & acoustics.
           </p>
           <div className="flex items-center gap-5">
             {['Privacy Policy', 'Terms of Service', 'Warranty Policy'].map((link) => (

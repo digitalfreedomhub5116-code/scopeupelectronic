@@ -228,7 +228,7 @@ export default function Hero() {
             <div className="inline-flex items-center self-start">
               <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[11px] sm:text-xs font-bold uppercase tracking-wider bg-[#FDF2F4] text-[#991B33] border border-[#F7CCD5] shadow-xs">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#991B33] animate-pulse" />
-                <span>Scope Internationals</span>
+                <span>Scope International</span>
                 <span className="text-[#991B33]/40">•</span>
                 <span>Flagship 2026</span>
               </span>
@@ -729,7 +729,7 @@ export default function Hero() {
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-6 right-6 z-40 inline-flex items-center gap-2 rounded-full bg-[#00A859] hover:bg-[#008f4c] text-white px-4 py-2.5 text-xs sm:text-sm font-bold shadow-lg shadow-[#00A859]/30 transition-all duration-300 hover:scale-105 active:scale-95"
-        title="Contact Scope Internationals Concierge Support"
+        title="Contact Scope International Concierge Support"
       >
         <MessageCircle className="h-4 w-4 fill-white" />
         <span>Concierge Desk</span>

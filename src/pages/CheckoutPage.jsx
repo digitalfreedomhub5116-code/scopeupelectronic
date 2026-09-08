@@ -373,7 +373,7 @@ export default function CheckoutPage() {
             <ArrowLeft className="h-4 w-4" />
             <span>Return to Catalog</span>
           </Link>
-          <span className="font-heading text-base font-bold tracking-wider text-[#1C1917]">SCOPE INTERNATIONALS</span>
+          <span className="font-heading text-base font-bold tracking-wider text-[#1C1917]">Scope International</span>
           <Link to="/" className="text-xs font-bold uppercase tracking-wider text-[#78716C] hover:text-[#991B33]">
             CANCEL
           </Link>
@@ -396,7 +396,7 @@ export default function CheckoutPage() {
         </div>
 
         <div className="border-t border-[#E7E2D9] py-4 text-center text-xs text-[#78716C]">
-          © 2026 Scope Internationals. All rights reserved.
+          © 2026 Scope International. All rights reserved.
         </div>
       </div>
     )
@@ -428,7 +428,7 @@ export default function CheckoutPage() {
             {/* Brand Title */}
             <div className="flex items-center gap-2">
               <span className="font-heading text-base font-extrabold tracking-[0.15em] text-[#1C1917]">
-                SCOPE INTERNATIONALS
+                Scope International
               </span>
             </div>
 
@@ -593,7 +593,7 @@ export default function CheckoutPage() {
               <div className="rounded-2xl border border-[#E7E2D9] bg-white p-6 space-y-4 shadow-md animate-fade-in-up">
                 <div className="flex items-center justify-between pb-3 border-b border-[#E7E2D9]">
                   <h3 className="font-heading text-lg font-bold text-[#1C1917]">
-                    {authMode === 'signup' ? 'Create Scope Account' : 'Sign in to Scope Internationals'}
+                    {authMode === 'signup' ? 'Create Scope Account' : 'Sign in to Scope International'}
                   </h3>
                   <button
                     onClick={() => setIsAuthFormOpen(false)}
@@ -1379,7 +1379,7 @@ export default function CheckoutPage() {
                   <p className="text-xs text-[#78716C]">
                     {paymentMethod === 'COD'
                       ? 'Pay cash upon arrival'
-                      : 'Priority dispatch from Scope Internationals fulfillment hub'}
+                      : 'Priority dispatch from Scope International fulfillment hub'}
                   </p>
                 </div>
                 <span className="text-xs font-mono font-bold text-[#991B33]">₹{totalAmount}</span>

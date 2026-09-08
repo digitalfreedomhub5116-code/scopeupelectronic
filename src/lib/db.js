@@ -142,14 +142,14 @@ export async function createOrder(orderPayload) {
       id: 'evt-1',
       status: 'PLACED',
       activity: 'Order placed & payment verified',
-      location: 'Scope Internationals Flagship Store',
+      location: 'Scope International Flagship Store',
       event_time: new Date().toISOString(),
     },
     {
       id: 'evt-2',
       status: 'CONFIRMED',
       activity: 'Order confirmed: Hardware allocated for QC inspection & packaging',
-      location: 'Scope Internationals Central Facility, Bengaluru',
+      location: 'Scope International Central Facility, Bengaluru',
       event_time: new Date(Date.now() + 1000 * 60 * 5).toISOString(),
     },
   ]
@@ -286,7 +286,7 @@ export async function createOrder(orderPayload) {
               order_id: orderRecord.id,
               status: evt.status || 'PLACED',
               activity: evt.activity || 'Order placed',
-              location: evt.location || 'Scope Internationals Global Portal',
+              location: evt.location || 'Scope International Global Portal',
               event_time: evt.event_time || new Date().toISOString(),
             }))
             const { error: trkErr } = await supabase.from('tracking_events').insert(trkRows)
@@ -455,7 +455,7 @@ export function advanceOrderStatus(orderNumber) {
     }
 
     const activityMap = {
-      PACKED: { activity: 'Hardware inspected and sealed in signature presentation box with warranty card', location: 'Scope Internationals Central Facility, Bengaluru' },
+      PACKED: { activity: 'Hardware inspected and sealed in signature presentation box with warranty card', location: 'Scope International Central Facility, Bengaluru' },
       SHIPPED: { activity: 'Handed over to express courier partner (Blue Dart Express)', location: 'Bengaluru Sort Facility' },
       IN_TRANSIT: { activity: 'Package in transit between distribution hubs', location: 'National Sorting Center' },
       OUT_FOR_DELIVERY: { activity: 'Out for delivery with courier delivery executive', location: order.shipping_address?.city || 'Local Delivery Hub' },

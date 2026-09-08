@@ -17,6 +17,39 @@ export default function Navbar({ visible = true }) {
   const [mobileSearchQuery, setMobileSearchQuery] = useState('')
   const navigate = useNavigate()
 
+  // Track scroll direction for mobile navbar behavior
+  const [scrollDirection, setScrollDirection] = useState('none')
+  const [scrollY, setScrollY] = useState(0)
+
+  useEffect(() => {
+    let lastScrollY = window.scrollY
+    let ticking = false
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY
+          setScrollY(currentScrollY)
+          
+          if (currentScrollY < 50) {
+            setScrollDirection('none')
+          } else if (currentScrollY > lastScrollY && currentScrollY - lastScrollY > 5) {
+            setScrollDirection('down') // Scrolling down
+          } else if (currentScrollY < lastScrollY && lastScrollY - currentScrollY > 5) {
+            setScrollDirection('up') // Scrolling up
+          }
+          
+          lastScrollY = currentScrollY > 0 ? currentScrollY : 0
+          ticking = false
+        })
+        ticking = true
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   const handleNavClick = (hash) => {
     setMobileMenuOpen(false)
     if (hash === '#') {
@@ -38,6 +71,12 @@ export default function Navbar({ visible = true }) {
     }
   }
 
+  // Mobile scroll logic:
+  // - hide completely if scrolling down and past 50px
+  // - show only search bar (hide Row 1) if scrolling up and past 50px
+  const isMobileHideAll = scrollDirection === 'down' && scrollY > 50
+  const isMobileShowSearchOnly = scrollDirection === 'up' && scrollY > 50
+
   return (
     <>
       {/* ══════════════════════════════════════════════════════════
@@ -45,7 +84,7 @@ export default function Navbar({ visible = true }) {
           ══════════════════════════════════════════════════════════ */}
       <nav
         className={`fixed top-0 left-0 right-0 z-50 md:hidden transition-all duration-300 ease-out ${
-          visible ? 'translate-y-0' : '-translate-y-full pointer-events-none'
+          !visible || isMobileHideAll ? '-translate-y-full pointer-events-none' : 'translate-y-0'
         }`}
       >
         {/* Gradient Background Layer */}
@@ -59,8 +98,14 @@ export default function Navbar({ visible = true }) {
         />
 
         <div className="relative px-4 pt-3 pb-3">
-          {/* Row 1: Grid Icon · WELCOME · Notification Bell */}
-          <div className="flex items-center justify-between mb-3">
+          {/* Row 1: Grid Icon · Brand Logo · Shopping Cart */}
+          <div
+            className={`flex items-center justify-between transition-all duration-300 overflow-hidden ${
+              isMobileShowSearchOnly
+                ? 'h-0 mb-0 opacity-0 pointer-events-none'
+                : 'h-10 mb-3 opacity-100'
+            }`}
+          >
             {/* Grid / Menu Icon */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -85,7 +130,7 @@ export default function Navbar({ visible = true }) {
               <div className="flex flex-col">
                 <div className="flex items-baseline gap-1 font-serif text-sm font-bold tracking-[0.08em] leading-tight">
                   <span className="text-[#1C1917]">SCOPE</span>
-                  <span className="text-[#991B33]">INTERNATIONALS</span>
+                  <span className="text-[#991B33]">INTERNATIONAL</span>
                 </div>
                 <span className="text-[7px] font-semibold tracking-[0.2em] text-[#78716C] uppercase leading-tight mt-0.5">
                   PREMIUM ELECTRONICS & TECH
@@ -222,7 +267,7 @@ export default function Navbar({ visible = true }) {
               <div className="flex flex-col">
                 <div className="flex items-baseline gap-1 font-serif text-lg font-bold tracking-[0.08em] leading-tight">
                   <span className="text-[#1C1917]">SCOPE</span>
-                  <span className="text-[#991B33]">INTERNATIONALS</span>
+                  <span className="text-[#991B33]">INTERNATIONAL</span>
                 </div>
                 <span className="text-[10px] font-semibold tracking-[0.2em] text-[#78716C] uppercase leading-tight">
                   PREMIUM ELECTRONICS & TECH

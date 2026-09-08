@@ -18,7 +18,7 @@ export default function FeatureBanner() {
               <div className="relative overflow-hidden rounded-3xl border border-[#E7E2D9] bg-white shadow-xl shadow-stone-900/5">
                 <img
                   src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=900&q=80"
-                  alt="Scope Internationals Precision Electronics Engineering"
+                  alt="Scope International Precision Electronics Engineering"
                   className="w-full h-auto object-cover rounded-2xl transition-transform duration-700 ease-out group-hover:scale-104"
                   loading="lazy"
                 />
@@ -54,7 +54,7 @@ export default function FeatureBanner() {
 
             {/* Paragraph */}
             <p className="mt-4 text-sm sm:text-base leading-relaxed text-[#57534E] max-w-2xl font-sans">
-              At Scope Internationals, every electronic masterpiece is crafted with obsessive attention to acoustic fidelity, thermal efficiency, and ergonomic luxury. From aerospace-grade aluminum chassis to proprietary low-distortion drivers, we deliver consumer tech that elevates every listening session, workspace, and daily ritual.
+              At Scope International, every electronic masterpiece is crafted with obsessive attention to acoustic fidelity, thermal efficiency, and ergonomic luxury. From aerospace-grade aluminum chassis to proprietary low-distortion drivers, we deliver consumer tech that elevates every listening session, workspace, and daily ritual.
             </p>
 
             {/* 3 Pillars */}

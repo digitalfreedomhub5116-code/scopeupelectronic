@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* ── Custom Design Tokens for Scope Internationals ── */
+/* ── Custom Design Tokens for Scope International ── */
 @theme {
   --color-canvas: #FAF8F5;
   --color-canvas-subtle: #F4EFEA;
@@ -167,7 +167,7 @@
   animation: slide-out-right 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* ── Scope Internationals Glassmorphism Navbar ── */
+/* ── Scope International Glassmorphism Navbar ── */
 .navbar-glass {
   background: rgba(250, 248, 245, 0.92);
   backdrop-filter: blur(16px) saturate(180%);

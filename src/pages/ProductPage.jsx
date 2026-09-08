@@ -211,7 +211,7 @@ export default function ProductPage() {
     if (navigator.share) {
       navigator.share({
         title: product.fullName,
-        text: `Check out ${product.fullName} on Scope Internationals`,
+        text: `Check out ${product.fullName} on Scope International`,
         url: window.location.href,
       }).catch(() => {})
     } else {
