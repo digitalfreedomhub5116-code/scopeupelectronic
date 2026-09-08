@@ -74,20 +74,32 @@ export default function Navbar({ visible = true }) {
               )}
             </button>
 
-            {/* WELCOME / Brand Text */}
-            <Link to="/" className="flex flex-col items-center">
-              <span className="font-serif text-lg font-bold tracking-[0.15em] text-[#1C1917]">
-                WELCOME
-              </span>
+            {/* Brand Logo */}
+            <Link to="/" className="flex items-center gap-2 group">
+              {/* Circular "SI" Monogram Badge */}
+              <div className="h-8 w-8 rounded-full bg-[#1C1917] flex items-center justify-center text-white font-serif font-bold text-xs tracking-tighter shadow-sm transition-transform duration-300 group-hover:scale-105">
+                SI
+              </div>
+
+              {/* Brand Typography */}
+              <div className="flex flex-col">
+                <div className="flex items-baseline gap-1 font-serif text-sm font-bold tracking-[0.08em] leading-tight">
+                  <span className="text-[#1C1917]">SCOPE</span>
+                  <span className="text-[#991B33]">INTERNATIONALS</span>
+                </div>
+                <span className="text-[7px] font-semibold tracking-[0.2em] text-[#78716C] uppercase leading-tight mt-0.5">
+                  PREMIUM ELECTRONICS & TECH
+                </span>
+              </div>
             </Link>
 
-            {/* Notification / Cart Bell */}
+            {/* Shopping Cart */}
             <button
               onClick={toggleCart}
               className="relative flex items-center justify-center h-10 w-10 rounded-xl bg-white/60 backdrop-blur-sm text-[#1C1917] transition-all active:scale-95"
               aria-label="Shopping Bag"
             >
-              <Bell className="h-[18px] w-[18px]" strokeWidth={1.8} />
+              <ShoppingBag className="h-[18px] w-[18px]" strokeWidth={1.8} />
               {itemCount > 0 && (
                 <span className="absolute -right-0.5 -top-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-[#991B33] text-[9px] font-bold text-white shadow-sm">
                   {itemCount}
