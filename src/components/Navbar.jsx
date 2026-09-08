@@ -62,13 +62,19 @@ export default function Navbar({ visible = true }) {
               </div>
             </Link>
 
-            {/* 2. Desktop Navigation: Home & Categories */}
-            <div className="hidden md:flex items-center gap-8 lg:gap-10">
+            {/* 2. Desktop Navigation: Home, All Products & Categories */}
+            <div className="hidden md:flex items-center gap-7 lg:gap-9">
               <button
                 onClick={() => handleNavClick('#')}
                 className="text-xs sm:text-sm font-bold text-[#1C1917] transition-colors hover:text-[#991B33] tracking-[0.15em] uppercase cursor-pointer"
               >
                 HOME
+              </button>
+              <button
+                onClick={() => handleNavClick('#products')}
+                className="text-xs sm:text-sm font-bold text-[#57534E] transition-colors hover:text-[#991B33] tracking-[0.15em] uppercase cursor-pointer"
+              >
+                ALL PRODUCTS
               </button>
               <button
                 onClick={() => handleNavClick('#genres')}
@@ -160,6 +166,12 @@ export default function Navbar({ visible = true }) {
                 className="text-left text-xs font-bold text-[#1C1917] hover:text-[#991B33] tracking-[0.15em] uppercase py-2 cursor-pointer border-b border-[#E7E2D9]/60"
               >
                 HOME
+              </button>
+              <button
+                onClick={() => handleNavClick('#products')}
+                className="text-left text-xs font-bold text-[#57534E] hover:text-[#991B33] tracking-[0.15em] uppercase py-2 cursor-pointer border-b border-[#E7E2D9]/60"
+              >
+                ALL PRODUCTS
               </button>
               <button
                 onClick={() => handleNavClick('#genres')}
