@@ -72,10 +72,50 @@ const DESKTOP_BENTO_ITEMS = [
   },
 ]
 
+// Smooth cubic ease-out count-up animation hook
+function useCounter(target, duration, delay, isTriggered, isFloat = false) {
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    if (!isTriggered) return
+    let startTime = null
+    let animFrame = null
+    const timeoutId = setTimeout(() => {
+      const animate = (timestamp) => {
+        if (!startTime) startTime = timestamp
+        const progress = Math.min((timestamp - startTime) / duration, 1)
+        // Cubic ease-out: 1 - (1 - t)^3
+        const easeProgress = 1 - Math.pow(1 - progress, 3)
+        const current = target * easeProgress
+        setCount(isFloat ? current : Math.round(current))
+
+        if (progress < 1) {
+          animFrame = requestAnimationFrame(animate)
+        }
+      }
+      animFrame = requestAnimationFrame(animate)
+    }, delay)
+
+    return () => {
+      clearTimeout(timeoutId)
+      if (animFrame) cancelAnimationFrame(animFrame)
+    }
+  }, [isTriggered, target, duration, delay, isFloat])
+
+  return count
+}
+
 export default function Hero() {
   const [ref, isVisible] = useScrollReveal(0.05)
   const carouselRef = useRef(null)
   const singleSetWidthRef = useRef(0)
+
+  // Staggered animated counters for the 4 metric boxes
+  const count1 = useCounter(4.9, 900, 200, isVisible, true)
+  const count2 = useCounter(100, 900, 400, isVisible, false)
+  const count3 = useCounter(50000, 1100, 600, isVisible, false)
+  const count4A = useCounter(24, 900, 800, isVisible, false)
+  const count4B = useCounter(48, 900, 800, isVisible, false)
 
   const rawProducts = useCartStore((s) => s.products) || MOCK_PRODUCTS
   const allProducts = rawProducts.filter((p) => !p.isHidden)
@@ -273,12 +313,17 @@ export default function Hero() {
             </button>
           </div>
 
-          {/* 4 Stat Metric Boxes (Embedded right in the Top Hero Section) */}
+          {/* 4 Stat Metric Boxes with Staggered Slide-Up & Count-Up Animation */}
           <div className="mt-6 grid grid-cols-2 gap-2.5 w-full max-w-sm px-2">
             {/* Metric 1 */}
-            <div className="rounded-2xl bg-white border border-[#E7E2D9] p-3 text-center shadow-xs flex flex-col justify-center items-center">
+            <div
+              className={`rounded-2xl bg-white border border-[#E7E2D9] p-3 text-center shadow-xs flex flex-col justify-center items-center transition-all duration-700 ease-out ${
+                isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'
+              }`}
+              style={{ transitionDelay: '200ms' }}
+            >
               <span className="font-serif text-xl sm:text-2xl font-bold text-[#1C1917]">
-                4.9 ★
+                {count1.toFixed(1)} ★
               </span>
               <span className="text-[9px] font-bold tracking-wider text-[#78716C] uppercase mt-0.5 leading-tight">
                 Customer Satisfaction
@@ -286,9 +331,14 @@ export default function Hero() {
             </div>
 
             {/* Metric 2: Crimson Highlight */}
-            <div className="rounded-2xl bg-white border border-[#E7E2D9] p-3 text-center shadow-xs flex flex-col justify-center items-center">
+            <div
+              className={`rounded-2xl bg-white border border-[#E7E2D9] p-3 text-center shadow-xs flex flex-col justify-center items-center transition-all duration-700 ease-out ${
+                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 scale-95'
+              }`}
+              style={{ transitionDelay: '400ms' }}
+            >
               <span className="font-serif text-xl sm:text-2xl font-bold text-[#991B33]">
-                100%
+                {count2}%
               </span>
               <span className="text-[9px] font-bold tracking-wider text-[#78716C] uppercase mt-0.5 leading-tight">
                 Genuine Certified Tech
@@ -296,9 +346,14 @@ export default function Hero() {
             </div>
 
             {/* Metric 3 */}
-            <div className="rounded-2xl bg-white border border-[#E7E2D9] p-3 text-center shadow-xs flex flex-col justify-center items-center">
+            <div
+              className={`rounded-2xl bg-white border border-[#E7E2D9] p-3 text-center shadow-xs flex flex-col justify-center items-center transition-all duration-700 ease-out ${
+                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 scale-95'
+              }`}
+              style={{ transitionDelay: '600ms' }}
+            >
               <span className="font-serif text-xl sm:text-2xl font-bold text-[#1C1917]">
-                50,000+
+                {count3.toLocaleString('en-IN')}+
               </span>
               <span className="text-[9px] font-bold tracking-wider text-[#78716C] uppercase mt-0.5 leading-tight">
                 Devices Delivered
@@ -306,9 +361,14 @@ export default function Hero() {
             </div>
 
             {/* Metric 4: Emerald Green Highlight */}
-            <div className="rounded-2xl bg-white border border-[#E7E2D9] p-3 text-center shadow-xs flex flex-col justify-center items-center">
+            <div
+              className={`rounded-2xl bg-white border border-[#E7E2D9] p-3 text-center shadow-xs flex flex-col justify-center items-center transition-all duration-700 ease-out ${
+                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 scale-95'
+              }`}
+              style={{ transitionDelay: '800ms' }}
+            >
               <span className="font-serif text-xl sm:text-2xl font-bold text-[#059669]">
-                24 - 48h
+                {count4A} - {count4B}h
               </span>
               <span className="text-[9px] font-bold tracking-wider text-[#78716C] uppercase mt-0.5 leading-tight">
                 Express Courier Dispatch
@@ -735,14 +795,17 @@ export default function Hero() {
 
         {/* ──────── 4 STAT METRIC BOXES (Desktop view below bento) ──────── */}
         <div
-          className={`hidden lg:grid mt-12 sm:mt-16 grid-cols-4 gap-4 transition-all duration-700 delay-300 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
-          }`}
+          className="hidden lg:grid mt-12 sm:mt-16 grid-cols-4 gap-4"
         >
           {/* Metric 1 */}
-          <div className="rounded-2xl bg-white border border-[#E7E2D9] p-4 sm:p-6 text-center shadow-xs flex flex-col justify-center items-center">
+          <div
+            className={`rounded-2xl bg-white border border-[#E7E2D9] p-4 sm:p-6 text-center shadow-xs flex flex-col justify-center items-center transition-all duration-700 ease-out ${
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}
+            style={{ transitionDelay: '200ms' }}
+          >
             <span className="font-serif text-2xl sm:text-4xl font-bold text-[#1C1917]">
-              4.9 ★
+              {count1.toFixed(1)} ★
             </span>
             <span className="text-[10px] sm:text-xs font-bold tracking-wider text-[#78716C] uppercase mt-1">
               Customer Satisfaction
@@ -750,9 +813,14 @@ export default function Hero() {
           </div>
 
           {/* Metric 2: Crimson Highlight */}
-          <div className="rounded-2xl bg-white border border-[#E7E2D9] p-4 sm:p-6 text-center shadow-xs flex flex-col justify-center items-center">
+          <div
+            className={`rounded-2xl bg-white border border-[#E7E2D9] p-4 sm:p-6 text-center shadow-xs flex flex-col justify-center items-center transition-all duration-700 ease-out ${
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}
+            style={{ transitionDelay: '400ms' }}
+          >
             <span className="font-serif text-2xl sm:text-4xl font-bold text-[#991B33]">
-              100%
+              {count2}%
             </span>
             <span className="text-[10px] sm:text-xs font-bold tracking-wider text-[#78716C] uppercase mt-1">
               Genuine Certified Tech
@@ -760,9 +828,14 @@ export default function Hero() {
           </div>
 
           {/* Metric 3 */}
-          <div className="rounded-2xl bg-white border border-[#E7E2D9] p-4 sm:p-6 text-center shadow-xs flex flex-col justify-center items-center">
+          <div
+            className={`rounded-2xl bg-white border border-[#E7E2D9] p-4 sm:p-6 text-center shadow-xs flex flex-col justify-center items-center transition-all duration-700 ease-out ${
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}
+            style={{ transitionDelay: '600ms' }}
+          >
             <span className="font-serif text-2xl sm:text-4xl font-bold text-[#1C1917]">
-              50,000+
+              {count3.toLocaleString('en-IN')}+
             </span>
             <span className="text-[10px] sm:text-xs font-bold tracking-wider text-[#78716C] uppercase mt-1">
               Devices Delivered
@@ -770,9 +843,14 @@ export default function Hero() {
           </div>
 
           {/* Metric 4: Emerald Green Highlight */}
-          <div className="rounded-2xl bg-white border border-[#E7E2D9] p-4 sm:p-6 text-center shadow-xs flex flex-col justify-center items-center">
+          <div
+            className={`rounded-2xl bg-white border border-[#E7E2D9] p-4 sm:p-6 text-center shadow-xs flex flex-col justify-center items-center transition-all duration-700 ease-out ${
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}
+            style={{ transitionDelay: '800ms' }}
+          >
             <span className="font-serif text-2xl sm:text-4xl font-bold text-[#059669]">
-              24 - 48h
+              {count4A} - {count4B}h
             </span>
             <span className="text-[10px] sm:text-xs font-bold tracking-wider text-[#78716C] uppercase mt-1">
               Express Courier Dispatch
