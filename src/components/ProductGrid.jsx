@@ -42,7 +42,7 @@ function ProductCard({ product }) {
       }`}
     >
       {/* Product Image & Wishlist Button */}
-      <div className="relative aspect-[4/3] sm:aspect-[4/3.2] w-full overflow-hidden bg-stone-100">
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-stone-100">
         <img
           src={product.image}
           alt={product.name}
@@ -84,15 +84,13 @@ function ProductCard({ product }) {
         </button>
       </div>
 
-      {/* Product Details */}
-      <div className="p-3 sm:p-4 flex flex-col flex-1 justify-between bg-white">
+      {/* Product Details — Compact */}
+      <div className="px-2.5 py-2 sm:px-3 sm:py-2.5 flex flex-col flex-1 justify-between bg-white">
         <div>
           {/* Title */}
-          <h3 className="font-serif text-sm sm:text-base font-bold text-[#1C1917] transition-colors group-hover:text-[#991B33] line-clamp-1">
+          <h3 className="font-serif text-xs sm:text-sm font-bold text-[#1C1917] transition-colors group-hover:text-[#991B33] line-clamp-1">
             {product.shortName || product.name}
           </h3>
-
-
 
           {/* Star Rating */}
           <div
@@ -100,14 +98,14 @@ function ProductCard({ product }) {
               e.stopPropagation()
               openReviews(product)
             }}
-            className="mt-1.5 flex items-center gap-1 cursor-pointer group/rating hover:opacity-90 transition-opacity"
+            className="mt-1 flex items-center gap-1 cursor-pointer group/rating hover:opacity-90 transition-opacity"
             title="Click to view verified buyer reviews"
           >
             <div className="flex items-center text-amber-500">
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
-                  className={`h-2.5 w-2.5 sm:h-3 sm:w-3 ${
+                  className={`h-2.5 w-2.5 ${
                     i < Math.floor(product.rating)
                       ? 'fill-amber-500 text-amber-500'
                       : i < product.rating
@@ -117,41 +115,41 @@ function ProductCard({ product }) {
                 />
               ))}
             </div>
-            <span className="text-[11px] sm:text-xs font-bold text-[#1C1917]">
+            <span className="text-[10px] sm:text-[11px] font-bold text-[#1C1917]">
               {product.rating}
             </span>
-            <span className="text-[10px] sm:text-[11px] text-[#78716C] group-hover/rating:text-[#991B33] transition-colors">
+            <span className="text-[9px] sm:text-[10px] text-[#78716C] group-hover/rating:text-[#991B33] transition-colors">
               ({product.reviewCount})
             </span>
           </div>
 
           {/* Pricing */}
-          <div className="mt-2 flex items-baseline gap-2 flex-nowrap overflow-hidden">
-            <span className="font-serif text-base sm:text-lg font-bold text-[#991B33] shrink-0">
+          <div className="mt-1 flex items-baseline gap-1.5 flex-nowrap overflow-hidden">
+            <span className="font-serif text-sm sm:text-base font-bold text-[#991B33] shrink-0">
               ₹{product.price.toLocaleString('en-IN')}
             </span>
-            <span className="text-[11px] text-[#A8A29E] line-through shrink-0">
+            <span className="text-[10px] text-[#A8A29E] line-through shrink-0">
               ₹{product.originalPrice?.toLocaleString('en-IN')}
             </span>
-            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded shrink-0">
+            <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1 py-0.5 rounded shrink-0">
               {product.discountBadge || `-${product.discountPercent}%`}
             </span>
           </div>
         </div>
 
         {/* Add to Bag Button */}
-        <div className="mt-3 pt-2.5 border-t border-[#F0EBE3]">
+        <div className="mt-1.5 pt-1.5 border-t border-[#F0EBE3]">
           <button
             onClick={handleAdd}
             disabled={isOutOfStock}
-            className={`flex w-full items-center justify-center gap-1.5 rounded-xl py-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
+            className={`flex w-full items-center justify-center gap-1.5 rounded-xl py-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider transition-all duration-300 ${
               isOutOfStock
                 ? 'bg-stone-100 text-stone-400 border border-stone-200 cursor-not-allowed'
                 : 'bg-[#991B33] hover:bg-[#7E1227] text-white shadow-xs hover:shadow-md hover:shadow-[#991B33]/20 active:scale-98 cursor-pointer'
             }`}
             aria-label={isOutOfStock ? `${product.name} is out of stock` : `Add ${product.name} to bag`}
           >
-            <ShoppingBag className="h-3.5 w-3.5" />
+            <ShoppingBag className="h-3 w-3" />
             <span>{isOutOfStock ? 'Out of Stock' : 'Add to Bag'}</span>
           </button>
         </div>

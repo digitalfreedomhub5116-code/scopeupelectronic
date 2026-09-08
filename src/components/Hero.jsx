@@ -209,7 +209,7 @@ export default function Hero() {
   }, [])
 
   return (
-    <section className="relative overflow-hidden bg-[#FAF8F5] pt-20 sm:pt-28 pb-12 sm:pb-20">
+    <section className="relative overflow-hidden bg-[#FAF8F5] pt-32 sm:pt-28 pb-8 sm:pb-20">
       {/* Subtle Warm Atmospheric Glows */}
       <div className="pointer-events-none absolute -top-40 -left-40 h-96 w-96 rounded-full bg-[#F5EFEA] blur-3xl opacity-60" />
       <div className="pointer-events-none absolute top-1/3 -right-40 h-96 w-96 rounded-full bg-[#FDF2F4] blur-3xl opacity-50" />
@@ -227,24 +227,24 @@ export default function Hero() {
 
 
             {/* Editorial Serif Main Headline */}
-            <h1 className="font-serif text-3xl sm:text-5xl lg:text-[46px] xl:text-[52px] font-bold text-[#1C1917] tracking-tight leading-[1.14] mt-4 sm:mt-5">
+            <h1 className="font-serif text-2xl sm:text-5xl lg:text-[46px] xl:text-[52px] font-bold text-[#1C1917] tracking-tight leading-[1.14]">
               Precision Engineered Sound &amp; Flagship Tech.
             </h1>
 
 
 
             {/* Dual CTAs */}
-            <div className="mt-6 sm:mt-7 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <div className="mt-4 sm:mt-7 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
               <button
                 onClick={handleScrollToProducts}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#991B33] hover:bg-[#7E1227] text-white px-6 py-3.5 text-xs sm:text-sm font-bold tracking-wide transition-all shadow-md shadow-[#991B33]/20 hover:shadow-lg hover:shadow-[#991B33]/30 active:scale-98 cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#991B33] hover:bg-[#7E1227] text-white px-5 py-3 text-xs sm:text-sm font-bold tracking-wide transition-all shadow-md shadow-[#991B33]/20 hover:shadow-lg hover:shadow-[#991B33]/30 active:scale-98 cursor-pointer"
               >
                 <span>Shop Flagship Devices</span>
                 <ArrowRight className="h-4 w-4" />
               </button>
               <button
                 onClick={handleScrollToProducts}
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#E7E2D9] bg-white hover:bg-[#F4EFEA] text-[#1C1917] px-6 py-3.5 text-xs sm:text-sm font-bold tracking-wide transition-all shadow-xs hover:border-[#D6D0C5] active:scale-98 cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#E7E2D9] bg-white hover:bg-[#F4EFEA] text-[#1C1917] px-5 py-3 text-xs sm:text-sm font-bold tracking-wide transition-all shadow-xs hover:border-[#D6D0C5] active:scale-98 cursor-pointer"
               >
                 <span>Explore Best Sellers</span>
               </button>
