@@ -3,6 +3,7 @@ import {
   ArrowRight,
   MessageCircle,
   ShoppingBag,
+  Star,
 } from 'lucide-react'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import { useCartStore, MOCK_PRODUCTS } from '../store/cartStore'
@@ -216,38 +217,68 @@ export default function Hero() {
 
       <div ref={ref} className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-        {/* ──────── MOBILE: Full-Screen Centered Hero ──────── */}
+        {/* ──────── MOBILE: Compact Centered Hero with Indian Social Proof ──────── */}
         <div
-          className={`flex flex-col items-center justify-center text-center min-h-[100svh] pt-32 pb-16 lg:hidden transition-all duration-700 ${
+          className={`flex flex-col items-center justify-center text-center pt-28 pb-5 lg:hidden transition-all duration-700 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
-          <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#1C1917] tracking-tight leading-[1.18] max-w-sm">
+          {/* Realistic Indian-Oriented Social Proof Pill */}
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/95 border border-[#E7E2D9] shadow-xs mb-3 backdrop-blur-sm">
+            <div className="flex -space-x-1.5 overflow-hidden">
+              <img
+                className="inline-block h-4 w-4 rounded-full ring-1 ring-white object-cover"
+                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
+                alt="Buyer review"
+              />
+              <img
+                className="inline-block h-4 w-4 rounded-full ring-1 ring-white object-cover"
+                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80"
+                alt="Buyer review"
+              />
+              <img
+                className="inline-block h-4 w-4 rounded-full ring-1 ring-white object-cover"
+                src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80"
+                alt="Buyer review"
+              />
+            </div>
+            <div className="flex items-center gap-1 text-amber-500">
+              <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
+              <span className="text-[11px] font-extrabold text-[#1C1917]">4.9</span>
+            </div>
+            <span className="text-[10px] font-semibold text-[#78716C]">
+              · 4,800+ Verified Buyers Across India
+            </span>
+          </div>
+
+          {/* Centered Headline */}
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#1C1917] tracking-tight leading-[1.2] max-w-xs sm:max-w-sm">
             Precision Engineered Sound & Premium Tech.
           </h1>
 
-          <div className="mt-8 flex flex-col items-stretch gap-3 w-full max-w-xs">
+          {/* Dual CTAs (Side by side for mobile vertical compactness) */}
+          <div className="mt-4 flex items-center justify-center gap-2.5 w-full max-w-xs px-2">
             <button
               onClick={handleScrollToProducts}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#991B33] hover:bg-[#7E1227] text-white px-5 py-3.5 text-sm font-bold tracking-wide transition-all shadow-md shadow-[#991B33]/20 active:scale-98 cursor-pointer"
+              className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-full bg-[#991B33] hover:bg-[#7E1227] text-white px-4 py-2.5 text-xs font-bold tracking-wide transition-all shadow-md shadow-[#991B33]/20 active:scale-98 cursor-pointer whitespace-nowrap"
             >
-              <span>Shop All Devices</span>
-              <ArrowRight className="h-4 w-4" />
+              <span>Shop All</span>
+              <ArrowRight className="h-3.5 w-3.5" />
             </button>
             <button
               onClick={handleScrollToProducts}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-[#E7E2D9] bg-white hover:bg-[#F4EFEA] text-[#1C1917] px-5 py-3.5 text-sm font-bold tracking-wide transition-all shadow-xs hover:border-[#D6D0C5] active:scale-98 cursor-pointer"
+              className="flex-1 inline-flex items-center justify-center rounded-full border border-[#E7E2D9] bg-white hover:bg-[#F4EFEA] text-[#1C1917] px-4 py-2.5 text-xs font-bold tracking-wide transition-all shadow-xs hover:border-[#D6D0C5] active:scale-98 cursor-pointer whitespace-nowrap"
             >
-              <span>Explore Best Sellers</span>
+              <span>Best Sellers</span>
             </button>
           </div>
         </div>
 
-        {/* ──────── MOBILE VIEW (< 1024px): IRREGULAR BENTO PATTERN WITH AUTO-SCROLL (Below the fold) ──────── */}
-        <div className="lg:hidden pb-16 pt-2 overflow-hidden -mx-4 px-4">
+        {/* ──────── MOBILE VIEW (< 1024px): PEEK-A-BOO BENTO PATTERN (Lower half on first load) ──────── */}
+        <div className="lg:hidden pb-12 pt-1 overflow-hidden -mx-4 px-4">
           <div
             ref={carouselRef}
-            className="flex gap-3 overflow-x-hidden no-scrollbar pb-2 pt-1 h-[340px] items-stretch"
+            className="flex gap-3 overflow-x-hidden no-scrollbar pb-2 pt-1 h-[320px] sm:h-[340px] items-stretch"
           >
             {infiniteModules.map((mod, idx) => {
               // 1. Single Tall Card
