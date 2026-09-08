@@ -224,25 +224,14 @@ export default function Hero() {
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
-            {/* Pill Tag with Glowing Crimson Dot */}
-            <div className="inline-flex items-center self-start">
-              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[11px] sm:text-xs font-bold uppercase tracking-wider bg-[#FDF2F4] text-[#991B33] border border-[#F7CCD5] shadow-xs">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#991B33] animate-pulse" />
-                <span>Scope International</span>
-                <span className="text-[#991B33]/40">•</span>
-                <span>Flagship 2026</span>
-              </span>
-            </div>
+
 
             {/* Editorial Serif Main Headline */}
             <h1 className="font-serif text-3xl sm:text-5xl lg:text-[46px] xl:text-[52px] font-bold text-[#1C1917] tracking-tight leading-[1.14] mt-4 sm:mt-5">
               Precision Engineered Sound &amp; Flagship Tech.
             </h1>
 
-            {/* Body Copy */}
-            <p className="mt-3.5 sm:mt-5 text-sm sm:text-base leading-relaxed text-[#57534E] max-w-xl font-sans">
-              Discover certified High-Fidelity Audio, Aerospace Titanium Wearables, and GaN Hyper-Fast Charging engineered for uncompromising acoustic purity and lasting endurance.
-            </p>
+
 
             {/* Dual CTAs */}
             <div className="mt-6 sm:mt-7 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -300,15 +289,7 @@ export default function Hero() {
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-black/10" />
 
-                          {/* Top Badges */}
-                          <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between z-10">
-                            <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-[#991B33] text-white shadow-xs">
-                              {mod.product.genre || 'TECH'}
-                            </span>
-                            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/90 backdrop-blur-md text-[#1C1917] border border-white/40">
-                              {mod.product.discountBadge || 'CERTIFIED'}
-                            </span>
-                          </div>
+
 
                           {/* Bottom Details */}
                           <div className="absolute bottom-3.5 left-3.5 right-3.5 z-10">

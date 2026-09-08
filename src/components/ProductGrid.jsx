@@ -53,12 +53,7 @@ function ProductCard({ product }) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-40" />
 
-        {/* Category Pill Tag on Image */}
-        <div className="absolute top-2.5 left-2.5 z-10">
-          <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold tracking-wider uppercase bg-white/90 backdrop-blur-sm text-[#1C1917] border border-stone-200 shadow-xs">
-            {product.genre}
-          </span>
-        </div>
+
 
         {/* Out of Stock badge */}
         {isOutOfStock && (
@@ -97,12 +92,7 @@ function ProductCard({ product }) {
             {product.shortName || product.name}
           </h3>
 
-          {/* Compliance & Grade Mini-Tag */}
-          <div className="mt-1 flex items-center gap-1.5 text-[10px] text-[#78716C] font-semibold">
-            <span className="text-[#991B33] font-bold">{product.purity || 'GRADE A+'}</span>
-            <span>•</span>
-            <span className="truncate">{product.compliance || 'CE / FCC / RoHS'}</span>
-          </div>
+
 
           {/* Star Rating */}
           <div
@@ -206,15 +196,9 @@ export default function ProductGrid() {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="mb-10 text-center max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-[#FDF2F4] text-[#991B33] border border-[#F7CCD5] mb-3">
-            <span>CURATED COLLECTION</span>
-          </div>
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1C1917] tracking-tight">
             Flagship Electronics Collection
           </h2>
-          <p className="mt-3 text-sm sm:text-base leading-relaxed text-[#57534E]">
-            Direct flagship consumer electronics, next-gen GaN fast chargers, titanium smart wearables, and studio-grade acoustics crafted for discerning tech connoisseurs.
-          </p>
         </div>
 
         {/* Product Grid */}

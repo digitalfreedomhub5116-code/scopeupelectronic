@@ -70,27 +70,13 @@ export default function GenreShowcase() {
       <div ref={sectionRef} className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div
-          className={`mb-10 sm:mb-14 flex flex-col sm:flex-row sm:items-end justify-between gap-4 transition-all duration-700 ${
+          className={`mb-10 sm:mb-14 transition-all duration-700 ${
             sectionVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
-          <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-[#FDF2F4] text-[#991B33] border border-[#F7CCD5] mb-3">
-              <span>CURATED TECH COLLECTIONS</span>
-            </div>
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1C1917] tracking-tight">
-              Shop by Category
-            </h2>
-            <p className="mt-2.5 max-w-xl text-sm sm:text-base leading-relaxed text-[#57534E]">
-              Explore high-fidelity audio, titanium smart wearables, GaN fast charging, and pro peripherals crafted for discerning tech lovers.
-            </p>
-          </div>
-
-          <div className="hidden sm:block">
-            <span className="text-xs font-bold text-[#78716C] uppercase tracking-wider">
-              {GENRES.length} Premium Collections
-            </span>
-          </div>
+          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1C1917] tracking-tight">
+            Shop by Category
+          </h2>
         </div>
 
         {/* Categories Bento Grid */}

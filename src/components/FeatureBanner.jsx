@@ -24,9 +24,7 @@ export default function FeatureBanner() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
                 <div className="absolute bottom-5 left-5 right-5 text-white">
-                  <span className="inline-block px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[#991B33] text-white mb-2">
-                    FLAGSHIP CERTIFIED
-                  </span>
+
                   <h4 className="font-serif text-lg font-bold">
                     Zero-Defect Quality Protocol
                   </h4>
@@ -40,12 +38,7 @@ export default function FeatureBanner() {
 
           {/* Right: Brand Engineering Narrative */}
           <div className="lg:col-span-7 flex flex-col justify-center text-left">
-            {/* Eyebrow */}
-            <div className="inline-flex items-center self-start">
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-[#FDF2F4] text-[#991B33] border border-[#F7CCD5]">
-                LUXURY CRAFTSMANSHIP & DESIGN
-              </span>
-            </div>
+
 
             {/* Headline */}
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1C1917] tracking-tight leading-tight mt-4">
