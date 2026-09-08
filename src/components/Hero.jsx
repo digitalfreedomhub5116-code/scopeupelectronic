@@ -1,13 +1,13 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import {
   ArrowRight,
   MessageCircle,
-  Star,
   ShoppingBag,
   Sparkles,
   ChevronLeft,
   ChevronRight,
-  Zap,
+  Play,
+  Pause,
 } from 'lucide-react'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import { useCartStore, MOCK_PRODUCTS } from '../store/cartStore'
@@ -79,17 +79,15 @@ const DESKTOP_BENTO_ITEMS = [
 export default function Hero() {
   const [ref, isVisible] = useScrollReveal(0.05)
   const carouselRef = useRef(null)
+  const isInteractingRef = useRef(false)
+  const singleSetWidthRef = useRef(0)
   const touchTimeoutRef = useRef(null)
+
+  const [isAutoScrolling, setIsAutoScrolling] = useState(true)
 
   const rawProducts = useCartStore((s) => s.products) || MOCK_PRODUCTS
   const allProducts = rawProducts.filter((p) => !p.isHidden)
   const productList = allProducts.length > 0 ? allProducts : MOCK_PRODUCTS
-
-  // Create a 3x loop list for seamless infinite horizontal scrolling on mobile
-  const infiniteList = [...productList, ...productList, ...productList]
-
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [isInteracting, setIsInteracting] = useState(false)
 
   const addItem = useCartStore((s) => s.addItem)
   const openCart = useCartStore((s) => s.openCart)
@@ -106,89 +104,158 @@ export default function Hero() {
     if (el) el.scrollIntoView({ behavior: 'smooth' })
   }
 
-  // Measure card width + gap dynamically
-  const getCardMetrics = useCallback(() => {
-    if (!carouselRef.current) return { cardWidth: 280, singleSetWidth: 280 * productList.length }
-    const container = carouselRef.current
-    const firstCard = container.querySelector('[data-bento-card]')
-    const cardWidth = firstCard ? firstCard.offsetWidth + 12 : container.clientWidth * 0.78 + 12
-    const singleSetWidth = cardWidth * productList.length
-    return { cardWidth, singleSetWidth }
-  }, [productList.length])
+  // ── Construct Dynamic Irregular Bento Pattern Modules ──
+  // Alternates: Single Tall Card -> Stacked (Tall+Short) -> Single Wide Card -> Stacked (Short+Tall)
+  const bentoModules = useMemo(() => {
+    if (!productList || productList.length === 0) return []
+    const mods = []
+    let i = 0
 
-  // Center initial scroll position to the middle duplicate set on mount
+    while (i < productList.length) {
+      const patternIdx = mods.length % 4
+
+      if (patternIdx === 0) {
+        // Module 1: Single Tall Portrait Card (w-[70vw] max-w-[280px])
+        mods.push({
+          id: `mod-${mods.length}`,
+          type: 'single-tall',
+          width: 'w-[70vw] max-w-[280px]',
+          product: productList[i],
+        })
+        i += 1
+      } else if (patternIdx === 1) {
+        // Module 2: Stacked Pair with Taller Top (185px) & Compact Bottom (145px)
+        const p1 = productList[i]
+        const p2 = productList[i + 1] || productList[0]
+        mods.push({
+          id: `mod-${mods.length}`,
+          type: 'stacked-pair-1',
+          width: 'w-[64vw] max-w-[250px]',
+          topProduct: p1,
+          bottomProduct: p2,
+        })
+        i += 2
+      } else if (patternIdx === 2) {
+        // Module 3: Single Wide Landscape Card (w-[76vw] max-w-[310px])
+        mods.push({
+          id: `mod-${mods.length}`,
+          type: 'single-wide',
+          width: 'w-[76vw] max-w-[310px]',
+          product: productList[i],
+        })
+        i += 1
+      } else {
+        // Module 4: Inverted Stacked Pair with Compact Top (145px) & Taller Bottom (185px)
+        const p1 = productList[i]
+        const p2 = productList[i + 1] || productList[0]
+        mods.push({
+          id: `mod-${mods.length}`,
+          type: 'stacked-pair-2',
+          width: 'w-[64vw] max-w-[250px]',
+          topProduct: p1,
+          bottomProduct: p2,
+        })
+        i += 2
+      }
+    }
+    return mods
+  }, [productList])
+
+  // 3x duplicate loop array for seamless infinite auto-scroll
+  const infiniteModules = useMemo(() => {
+    if (bentoModules.length === 0) return []
+    return [...bentoModules, ...bentoModules, ...bentoModules]
+  }, [bentoModules])
+
+  // Measure single set width on mount & position initial scroll at the middle duplicate
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (carouselRef.current && productList.length > 0) {
-        const { singleSetWidth } = getCardMetrics()
-        carouselRef.current.scrollLeft = singleSetWidth
+      if (carouselRef.current && bentoModules.length > 0) {
+        const el = carouselRef.current
+        const moduleEls = el.querySelectorAll('[data-bento-module]')
+        if (moduleEls.length >= bentoModules.length) {
+          let setWidth = 0
+          for (let i = 0; i < bentoModules.length; i++) {
+            if (moduleEls[i]) {
+              setWidth += moduleEls[i].offsetWidth + 12 // width + gap
+            }
+          }
+          singleSetWidthRef.current = setWidth
+          el.scrollLeft = setWidth
+        }
       }
-    }, 100)
+    }, 200)
     return () => clearTimeout(timer)
-  }, [getCardMetrics, productList.length])
+  }, [bentoModules])
 
-  // Continuous Seamless Infinite Wrap Detection & Live Index Tracker
-  const handleScroll = () => {
-    if (!carouselRef.current) return
-    const container = carouselRef.current
-    const { cardWidth, singleSetWidth } = getCardMetrics()
-    if (singleSetWidth <= 0 || cardWidth <= 0) return
+  // ── 60FPS Ambient Fluid Auto-Scroll Reel ──
+  useEffect(() => {
+    const el = carouselRef.current
+    if (!el) return
 
-    // Invisible Wrap-Around: If reached near the end of set 2, shift back to set 1 without visual interruption
-    if (container.scrollLeft >= singleSetWidth * 2) {
-      container.scrollLeft -= singleSetWidth
-    } else if (container.scrollLeft <= 10) {
-      container.scrollLeft += singleSetWidth
+    let animId
+    const scrollSpeed = 0.7 // Smooth, luxury drifting speed (~42px/sec)
+
+    const step = () => {
+      if (!isInteractingRef.current && el) {
+        el.scrollLeft += scrollSpeed
+
+        const setWidth = singleSetWidthRef.current
+        if (setWidth > 0) {
+          // Seamless wrap around when passing boundaries
+          if (el.scrollLeft >= setWidth * 2) {
+            el.scrollLeft -= setWidth
+          } else if (el.scrollLeft <= 5) {
+            el.scrollLeft += setWidth
+          }
+        }
+      }
+      animId = requestAnimationFrame(step)
     }
 
-    // Determine currently displayed product index (0 to productList.length - 1)
-    const normalizedScroll = (container.scrollLeft % singleSetWidth) + cardWidth * 0.3
-    const index = Math.floor(normalizedScroll / cardWidth) % productList.length
-    setCurrentIndex(Math.max(0, index))
-  }
+    animId = requestAnimationFrame(step)
+    return () => cancelAnimationFrame(animId)
+  }, [])
 
-  // Smooth Auto-Play Reel: Advances to next product every 3.5 seconds when not touched
-  useEffect(() => {
-    if (isInteracting) return
-
-    const interval = setInterval(() => {
-      if (!carouselRef.current) return
-      const { cardWidth } = getCardMetrics()
-      carouselRef.current.scrollBy({ left: cardWidth, behavior: 'smooth' })
-    }, 3500)
-
-    return () => clearInterval(interval)
-  }, [isInteracting, getCardMetrics])
-
-  // Touch & Drag interaction handlers to pause autoplay smoothly
+  // Touch & Mouse event handlers to pause auto-scroll during user interaction
   const handleTouchStart = () => {
-    setIsInteracting(true)
+    isInteractingRef.current = true
+    setIsAutoScrolling(false)
     if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current)
   }
 
   const handleTouchEnd = () => {
     if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current)
     touchTimeoutRef.current = setTimeout(() => {
-      setIsInteracting(false)
-    }, 3000)
+      isInteractingRef.current = false
+      setIsAutoScrolling(true)
+    }, 2500)
   }
 
-  // Manual Prev / Next arrow buttons for mobile
+  const handleMouseEnter = () => {
+    isInteractingRef.current = true
+    setIsAutoScrolling(false)
+  }
+
+  const handleMouseLeave = () => {
+    isInteractingRef.current = false
+    setIsAutoScrolling(true)
+  }
+
   const handleManualNav = (direction) => {
     if (!carouselRef.current) return
-    setIsInteracting(true)
-    const { cardWidth } = getCardMetrics()
+    isInteractingRef.current = true
+    setIsAutoScrolling(false)
     carouselRef.current.scrollBy({
-      left: direction * cardWidth,
+      left: direction * 280,
       behavior: 'smooth',
     })
     if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current)
     touchTimeoutRef.current = setTimeout(() => {
-      setIsInteracting(false)
-    }, 4000)
+      isInteractingRef.current = false
+      setIsAutoScrolling(true)
+    }, 3000)
   }
-
-  const activeProduct = productList[currentIndex] || productList[0]
 
   return (
     <section className="relative overflow-hidden bg-[#FAF8F5] pt-20 sm:pt-28 pb-12 sm:pb-20">
@@ -200,7 +267,7 @@ export default function Hero() {
         {/* Main 2-Column Split: Content & Bento Gallery */}
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12 xl:gap-16">
           
-          {/* ──────── LEFT COLUMN: Brand Story, Typography, CTAs & Social Proof ──────── */}
+          {/* ──────── LEFT COLUMN: Brand Story, Typography, CTAs ──────── */}
           <div
             className={`lg:col-span-5 xl:col-span-5 flex flex-col justify-center text-left transition-all duration-700 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
@@ -250,46 +317,166 @@ export default function Hero() {
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
-            {/* MOBILE VIEW: INFINITE SHOWCASE BENTO RIBBON */}
+            {/* ══════════════════════════════════════════════════════════════
+                MOBILE VIEW (< 1024px): IRREGULAR BENTO PATTERN WITH AUTO-SCROLL
+                - Alternating tall cards, wide cards, and stacked irregular pairs
+                - Fixed 340px height for impeccable vertical fit on phone screens
+                - 60FPS fluid ambient auto-scroll with pause-on-touch interaction
+               ══════════════════════════════════════════════════════════════ */}
             <div className="lg:hidden">
               <div
                 ref={carouselRef}
-                onScroll={handleScroll}
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
-                onMouseEnter={() => setIsInteracting(true)}
-                onMouseLeave={() => setIsInteracting(false)}
-                className="flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-3 pt-1 -mx-4 px-4"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                className="flex gap-3 overflow-x-auto no-scrollbar pb-2 pt-1 -mx-4 px-4 h-[340px] items-stretch cursor-grab active:cursor-grabbing"
                 style={{ WebkitOverflowScrolling: 'touch' }}
               >
-                {infiniteList.map((product, idx) => {
-                  const isCurrent = idx % productList.length === currentIndex
+                {infiniteModules.map((mod, idx) => {
+                  // 1. Single Tall Card
+                  if (mod.type === 'single-tall' || mod.type === 'single-wide') {
+                    return (
+                      <div
+                        key={`mod-${idx}`}
+                        data-bento-module="true"
+                        className={`${mod.width} flex-shrink-0 h-full`}
+                      >
+                        <div
+                          onClick={() => handleQuickAdd(mod.product)}
+                          className="relative h-full w-full rounded-3xl overflow-hidden border border-[#E7E2D9] shadow-md bg-stone-100 cursor-pointer active:scale-98 transition-all duration-300 group"
+                        >
+                          <img
+                            src={mod.product.image}
+                            alt={mod.product.name}
+                            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            loading={idx < 6 ? 'eager' : 'lazy'}
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-black/10" />
+
+                          {/* Top Badges */}
+                          <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between z-10">
+                            <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-[#991B33] text-white shadow-xs">
+                              {mod.product.genre || 'TECH'}
+                            </span>
+                            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/90 backdrop-blur-md text-[#1C1917] border border-white/40">
+                              {mod.product.discountBadge || 'CERTIFIED'}
+                            </span>
+                          </div>
+
+                          {/* Bottom Details */}
+                          <div className="absolute bottom-3.5 left-3.5 right-3.5 z-10">
+                            <h3 className="font-serif text-base font-bold text-white leading-tight line-clamp-1">
+                              {mod.product.name}
+                            </h3>
+                            <p className="text-[11px] text-white/80 mt-0.5 line-clamp-1 font-sans">
+                              {mod.product.chipset || mod.product.anc || mod.product.material || mod.product.description}
+                            </p>
+                            <div className="mt-2.5 flex items-center justify-between">
+                              <div className="flex items-baseline gap-1.5">
+                                <span className="font-serif text-lg font-bold text-white">
+                                  ₹{mod.product.price}
+                                </span>
+                                {mod.product.originalPrice && (
+                                  <span className="text-xs text-white/60 line-through">
+                                    ₹{mod.product.originalPrice}
+                                  </span>
+                                )}
+                              </div>
+                              <button
+                                onClick={(e) => handleQuickAdd(mod.product, e)}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white text-[#1C1917] hover:bg-stone-100 text-xs font-bold tracking-wide shadow-sm cursor-pointer active:scale-95 transition-all"
+                              >
+                                <ShoppingBag className="h-3 w-3 text-[#991B33]" />
+                                <span>Add</span>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  }
+
+                  // 2. Stacked Pair (Top: 185px, Bottom: 145px) or Inverted (Top: 145px, Bottom: 185px)
+                  const isPair1 = mod.type === 'stacked-pair-1'
+                  const topHeight = isPair1 ? 'h-[185px]' : 'h-[145px]'
+                  const bottomHeight = isPair1 ? 'h-[145px]' : 'h-[185px]'
+
                   return (
                     <div
-                      key={`${product.id}-${idx}`}
-                      data-bento-card="true"
-                      className="w-[78vw] max-w-[315px] flex-shrink-0 snap-center"
+                      key={`mod-${idx}`}
+                      data-bento-module="true"
+                      className={`${mod.width} flex-shrink-0 h-full flex flex-col justify-between gap-2.5`}
                     >
+                      {/* Top Card */}
                       <div
-                        onClick={() => handleQuickAdd(product)}
-                        className={`relative aspect-[4/5] w-full rounded-3xl overflow-hidden border shadow-lg bg-stone-100 cursor-pointer active:scale-98 transition-all duration-300 ${
-                          isCurrent ? 'border-[#991B33]/60 shadow-xl shadow-[#991B33]/10' : 'border-[#E7E2D9]'
-                        }`}
+                        onClick={() => handleQuickAdd(mod.topProduct)}
+                        className={`relative ${topHeight} w-full rounded-2xl overflow-hidden border border-[#E7E2D9] shadow-xs bg-stone-100 cursor-pointer active:scale-98 transition-all group`}
                       >
-                        <img src={product.image} alt={product.name} className="h-full w-full object-cover" loading="eager" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-black/10" />
-                        <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between z-10">
-                          <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-[#991B33] text-white shadow-xs">{product.badge || 'TECH'}</span>
+                        <img
+                          src={mod.topProduct.image}
+                          alt={mod.topProduct.name}
+                          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          loading={idx < 6 ? 'eager' : 'lazy'}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/10" />
+                        <div className="absolute top-2.5 left-2.5 z-10">
+                          <span className="px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-white/90 backdrop-blur-md text-[#1C1917]">
+                            {mod.topProduct.genre || 'TECH'}
+                          </span>
                         </div>
-                        <div className="absolute bottom-3.5 left-3.5 right-3.5 z-10">
-                          <h3 className="font-serif text-base font-bold text-white leading-tight line-clamp-1">{product.name}</h3>
-                          <div className="mt-2.5 flex items-center justify-between">
-                            <span className="font-serif text-lg font-bold text-white">₹{product.price}</span>
-                            <button onClick={(e) => handleQuickAdd(product, e)} className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white text-[#1C1917] hover:bg-stone-100 text-xs font-bold tracking-wide shadow-sm">
-                              <ShoppingBag className="h-3.5 w-3.5 text-[#991B33]" />
-                              <span>Add</span>
-                            </button>
+                        <div className="absolute bottom-2.5 left-2.5 right-2.5 z-10 flex items-end justify-between">
+                          <div className="max-w-[70%]">
+                            <h4 className="font-serif text-xs font-bold text-white line-clamp-1">
+                              {mod.topProduct.name}
+                            </h4>
+                            <span className="text-xs font-bold text-amber-300">
+                              ₹{mod.topProduct.price}
+                            </span>
                           </div>
+                          <button
+                            onClick={(e) => handleQuickAdd(mod.topProduct, e)}
+                            className="p-1.5 rounded-full bg-white text-[#1C1917] hover:bg-stone-100 shadow-xs cursor-pointer active:scale-95"
+                            title="Add to Bag"
+                          >
+                            <ShoppingBag className="h-3 w-3 text-[#991B33]" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Bottom Card */}
+                      <div
+                        onClick={() => handleQuickAdd(mod.bottomProduct)}
+                        className={`relative ${bottomHeight} w-full rounded-2xl overflow-hidden border border-[#E7E2D9] shadow-xs bg-stone-100 cursor-pointer active:scale-98 transition-all group`}
+                      >
+                        <img
+                          src={mod.bottomProduct.image}
+                          alt={mod.bottomProduct.name}
+                          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          loading={idx < 6 ? 'eager' : 'lazy'}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/10" />
+                        <div className="absolute top-2 left-2 z-10">
+                          <span className="px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-white/90 backdrop-blur-md text-[#1C1917]">
+                            {mod.bottomProduct.genre || 'TECH'}
+                          </span>
+                        </div>
+                        <div className="absolute bottom-2 left-2 right-2 z-10 flex items-end justify-between">
+                          <div className="max-w-[70%]">
+                            <h4 className="font-serif text-[11px] font-bold text-white line-clamp-1">
+                              {mod.bottomProduct.name}
+                            </h4>
+                            <span className="text-xs font-bold text-amber-300">
+                              ₹{mod.bottomProduct.price}
+                            </span>
+                          </div>
+                          <button
+                            onClick={(e) => handleQuickAdd(mod.bottomProduct, e)}
+                            className="p-1.5 rounded-full bg-white text-[#1C1917] hover:bg-stone-100 shadow-xs cursor-pointer active:scale-95"
+                            title="Add to Bag"
+                          >
+                            <ShoppingBag className="h-3 w-3 text-[#991B33]" />
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -297,10 +484,30 @@ export default function Hero() {
                 })}
               </div>
 
-              <div className="flex items-center justify-between mt-3 px-1">
-                <button onClick={() => handleManualNav(-1)} className="p-2 rounded-full bg-white border border-[#E7E2D9] text-[#1C1917] shadow-xs"><ChevronLeft className="h-4 w-4" /></button>
-                <div className="flex-1 px-4"><div className="w-full h-1.5 bg-[#EAE5DD] rounded-full overflow-hidden"><div className="h-full bg-[#991B33] transition-all duration-300" style={{ width: `${((currentIndex + 1) / productList.length) * 100}%` }} /></div></div>
-                <button onClick={() => handleManualNav(1)} className="p-2 rounded-full bg-white border border-[#E7E2D9] text-[#1C1917] shadow-xs"><ChevronRight className="h-4 w-4" /></button>
+              {/* Irregular Bento Auto-Scroll Indicator & Manual Arrow Buttons */}
+              <div className="flex items-center justify-between mt-2.5 px-1">
+                <button
+                  onClick={() => handleManualNav(-1)}
+                  className="p-2 rounded-full bg-white border border-[#E7E2D9] text-[#1C1917] shadow-xs cursor-pointer active:scale-95 hover:bg-stone-50 transition-all"
+                  aria-label="Previous Bento Module"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+
+                <div className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-[#991B33] animate-pulse" />
+                  <span className="text-[11px] font-bold text-[#78716C] tracking-wide">
+                    {isAutoScrolling ? 'Continuous Auto-Scroll Active' : 'Touch Control Active'}
+                  </span>
+                </div>
+
+                <button
+                  onClick={() => handleManualNav(1)}
+                  className="p-2 rounded-full bg-white border border-[#E7E2D9] text-[#1C1917] shadow-xs cursor-pointer active:scale-95 hover:bg-stone-50 transition-all"
+                  aria-label="Next Bento Module"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
               </div>
             </div>
 
