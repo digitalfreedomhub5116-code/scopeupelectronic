@@ -1,0 +1,778 @@
+import { useState, useEffect } from 'react'
+import { useSearchParams, Link } from 'react-router-dom'
+import {
+  Search,
+  Package,
+  CheckCircle2,
+  Clock,
+  Check,
+  ChevronRight,
+  ShoppingBag,
+  RefreshCw,
+  User,
+  Sparkles,
+  Truck,
+  MapPin,
+  AlertCircle,
+  XCircle,
+  Headphones,
+  RotateCcw
+} from 'lucide-react'
+import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
+import CartDrawer from '../components/CartDrawer'
+import WishlistDrawer from '../components/WishlistDrawer'
+import AuthModal from '../components/AuthModal'
+import {
+  getOrder,
+  getOrdersByPhone,
+  getUserOrders,
+  getCurrentCustomer,
+  initAuthListener
+} from '../lib/db'
+
+export default function OrderTrackingPage() {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const initialOrderId = searchParams.get('orderId') || ''
+
+  // Auth & User State
+  const [currentUser, setCurrentUser] = useState(() => getCurrentCustomer())
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
+
+  // Orders List State
+  const [userOrders, setUserOrders] = useState([])
+  const [ordersLoading, setOrdersLoading] = useState(true)
+
+  // Search State
+  const [query, setQuery] = useState(initialOrderId)
+  const [searchedOrder, setSearchedOrder] = useState(null)
+  const [searchLoading, setSearchLoading] = useState(false)
+  const [notFound, setNotFound] = useState(false)
+
+  // 6 Checkpoints matching Scope Internationals export fulfillment pipeline
+  const STAGES = [
+    {
+      key: 'PLACED',
+      step: '01',
+      label: 'Order Registered',
+      desc: 'Order registered and queued for hardware allocation',
+      icon: CheckCircle2,
+    },
+    {
+      key: 'CONFIRMED',
+      step: '02',
+      label: 'Quality Tested & Certified',
+      desc: 'Hardware precision-tested and validated against ISO9001 compliance',
+      icon: Sparkles,
+    },
+    {
+      key: 'PACKED',
+      step: '03',
+      label: 'Export Packaged & Sealed',
+      desc: 'Sealed in reinforced transit packaging with compliance docs',
+      icon: Package,
+    },
+    {
+      key: 'SHIPPED',
+      step: '04',
+      label: 'Dispatched & In Transit',
+      desc: 'Handed over to freight / air express courier partner',
+      icon: Truck,
+    },
+    {
+      key: 'OUT_FOR_DELIVERY',
+      step: '05',
+      label: 'Out for Delivery',
+      desc: 'Package is out with courier delivery executive for doorstep handover',
+      icon: MapPin,
+    },
+    {
+      key: 'DELIVERED',
+      step: '06',
+      label: 'Delivered',
+      desc: 'Safely delivered to recipient address',
+      icon: Check,
+    },
+  ]
+
+  const getStageIndex = (status) => {
+    if (status === 'IN_TRANSIT') return 3
+    const idx = STAGES.findIndex((s) => s.key === status)
+    return idx >= 0 ? idx : 0
+  }
+
+  // Auth Listener
+  useEffect(() => {
+    const unsub = initAuthListener((user) => {
+      setCurrentUser(user)
+    })
+    return () => unsub && unsub()
+  }, [])
+
+  // Load User Orders on Mount and when User changes
+  const loadOrders = async (user = currentUser) => {
+    setOrdersLoading(true)
+    try {
+      const orders = await getUserOrders(user)
+      setUserOrders(orders || [])
+
+      // Auto-sync cancellations from Shiprocket in background
+      const openOrders = (orders || []).filter(
+        (o) => o.status !== 'CANCELLED' && o.status !== 'CANCELED' && o.status !== 'DELIVERED'
+      )
+      if (openOrders.length > 0) {
+        fetch('/api/generate-awb?action=sync')
+          .then((r) => r.json())
+          .then((syncData) => {
+            if (syncData?.updated_cancellations?.length > 0) {
+              getUserOrders(user).then((fresh) => {
+                if (fresh) setUserOrders(fresh)
+              })
+            }
+          })
+          .catch(() => {})
+      }
+    } catch (e) {
+      console.warn('Failed to load user orders:', e)
+    } finally {
+      setOrdersLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    loadOrders(currentUser)
+  }, [currentUser])
+
+  // Search Single Order (for guest or specific ID lookup)
+  const fetchSingleOrder = async (idToSearch) => {
+    if (!idToSearch) return
+    setSearchLoading(true)
+    setNotFound(false)
+
+    try {
+      let res = await getOrder(idToSearch)
+      if (!res) {
+        const byPhone = await getOrdersByPhone(idToSearch)
+        if (byPhone.length > 0) res = byPhone[0]
+      }
+
+      if (res) {
+        setSearchedOrder(res)
+
+        // If order is active, trigger live status sync check with Shiprocket
+        if (res.status !== 'CANCELLED' && res.status !== 'CANCELED' && res.status !== 'DELIVERED') {
+          fetch(`/api/generate-awb?action=sync&orderId=${encodeURIComponent(res.order_number || res.id)}`)
+            .then((r) => r.json())
+            .then((syncData) => {
+              if (syncData?.updated_cancellations?.length > 0) {
+                getOrder(idToSearch).then((fresh) => {
+                  if (fresh) setSearchedOrder(fresh)
+                })
+              }
+            })
+            .catch(() => {})
+        }
+      } else {
+        setSearchedOrder(null)
+        setNotFound(true)
+      }
+    } catch (e) {
+      setNotFound(true)
+    } finally {
+      setSearchLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    if (initialOrderId) {
+      setQuery(initialOrderId)
+      fetchSingleOrder(initialOrderId)
+    }
+  }, [initialOrderId])
+
+  const handleSearch = (e) => {
+    e.preventDefault()
+    if (!query.trim()) {
+      setSearchedOrder(null)
+      setNotFound(false)
+      setSearchParams({})
+      return
+    }
+    setSearchParams({ orderId: query.trim() })
+    fetchSingleOrder(query.trim())
+  }
+
+  // Unified list of orders to display (NEVER duplicate sections)
+  const displayedOrders = (() => {
+    const cleanQ = query.trim().toUpperCase()
+    if (cleanQ) {
+      const matched = userOrders.filter(
+        (o) =>
+          o.order_number?.toUpperCase().includes(cleanQ) ||
+          (o.customer_phone && o.customer_phone.replace(/[^0-9]/g, '').includes(cleanQ))
+      )
+      if (matched.length > 0) return matched
+      if (searchedOrder) return [searchedOrder]
+      return []
+    }
+    // If no active search query, return all user orders
+    return userOrders
+  })()
+
+  return (
+    <div className="min-h-screen bg-[#FAF8F5] text-[#1C1917] selection:bg-[#991B33] selection:text-white flex flex-col justify-between">
+      <Navbar />
+
+      <main className="mx-auto max-w-4xl w-full px-4 sm:px-6 lg:px-8 pt-24 pb-20">
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 text-xs text-[#78716C] mb-6">
+          <Link to="/" className="hover:text-[#991B33] transition-colors">Home</Link>
+          <ChevronRight className="h-3 w-3" />
+          <span className="text-[#1C1917] font-medium">Orders & Live Tracking</span>
+        </div>
+
+        {/* Page Header */}
+        <div className="text-center max-w-2xl mx-auto mb-8">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#F7CCD5] bg-[#FDF2F4] px-3.5 py-1 text-xs font-semibold text-[#991B33] mb-3">
+            <Truck className="h-3.5 w-3.5" /> Global Logistics & Export Tracking
+          </span>
+          <h1 className="font-heading text-3xl sm:text-4xl font-extrabold text-[#1C1917] tracking-tight">
+            Orders & Live Tracking
+          </h1>
+          <p className="mt-2 text-xs sm:text-sm text-[#78716C]">
+            Track your electronics consignments and export shipments in realtime from testing to final delivery.
+          </p>
+
+          {/* Search Form */}
+          <form onSubmit={handleSearch} className="mt-6 flex gap-2 max-w-md mx-auto">
+            <div className="relative flex-1">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#78716C]" />
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search by Order ID or Mobile No."
+                className="w-full rounded-full border border-[#E7E2D9] bg-white pl-10 pr-4 py-3 text-xs sm:text-sm text-[#1C1917] placeholder-stone-400 focus:border-[#991B33] focus:outline-none focus:ring-1 focus:ring-[#991B33]/40 shadow-xs"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={searchLoading}
+              className="rounded-full px-6 py-3 text-xs font-bold uppercase tracking-wider bg-[#991B33] text-white hover:bg-[#7E1227] shadow-sm cursor-pointer disabled:opacity-50 transition-colors"
+            >
+              {searchLoading ? <RefreshCw className="h-4 w-4 animate-spin text-white" /> : 'Track'}
+            </button>
+          </form>
+        </div>
+
+        {/* User Account Status Banner */}
+        <div className="mb-8 rounded-2xl border border-[#E7E2D9] bg-white p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="h-10 w-10 rounded-full bg-[#FDF2F4] border border-[#F7CCD5] flex items-center justify-center text-[#991B33] font-bold text-sm shrink-0">
+              {currentUser?.avatar_url ? (
+                <img src={currentUser.avatar_url} alt={currentUser.name} className="h-full w-full rounded-full object-cover" />
+              ) : (
+                <User className="h-5 w-5" />
+              )}
+            </div>
+            <div className="min-w-0">
+              {currentUser ? (
+                <>
+                  <p className="text-sm font-bold text-[#1C1917] truncate">
+                    Orders for <span className="text-[#991B33]">{currentUser.name || currentUser.email}</span>
+                  </p>
+                  <p className="text-xs text-[#78716C] truncate">{currentUser.email}</p>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm font-bold text-[#1C1917]">Guest Client</p>
+                  <p className="text-xs text-[#78716C]">
+                    Sign in to automatically access and track all your active export consignments.
+                  </p>
+                </>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 shrink-0">
+            {currentUser ? (
+              <span className="text-xs font-bold text-[#991B33] px-3 py-1 rounded-full bg-[#FDF2F4] border border-[#F7CCD5]">
+                {displayedOrders.length} {displayedOrders.length === 1 ? 'Consignment' : 'Consignments'}
+              </span>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsAuthModalOpen(true)}
+                className="rounded-xl px-4 py-2 text-xs font-bold uppercase tracking-wider bg-[#991B33] text-white hover:bg-[#7E1227] cursor-pointer shadow-xs transition-colors"
+              >
+                Sign In to View Orders
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Search Not Found State */}
+        {notFound && !searchLoading && (
+          <div className="mb-8 rounded-2xl border border-[#E7E2D9] bg-white p-8 text-center max-w-md mx-auto shadow-xs">
+            <Package className="h-12 w-12 text-stone-300 mx-auto mb-3" />
+            <h3 className="font-heading text-lg font-bold text-[#1C1917]">Order Not Found</h3>
+            <p className="mt-1 text-xs text-[#78716C]">
+              We couldn't find an order matching "{query}". Please check your Order ID or phone number.
+            </p>
+          </div>
+        )}
+
+        {/* ALL YOUR ORDERS */}
+        <div className="space-y-6">
+          <div className="flex items-center justify-between pb-2 border-b border-[#E7E2D9]">
+            <h2 className="font-heading text-xl font-bold text-[#1C1917] flex items-center gap-2">
+              <Package className="h-5 w-5 text-[#991B33]" />
+              <span>Consignments & Orders</span>
+            </h2>
+            {query.trim() && (
+              <button
+                onClick={() => {
+                  setQuery('')
+                  setSearchedOrder(null)
+                  setNotFound(false)
+                  setSearchParams({})
+                }}
+                className="text-xs text-[#991B33] hover:underline cursor-pointer font-medium"
+              >
+                Clear Search & Show All
+              </button>
+            )}
+          </div>
+
+          {ordersLoading ? (
+            <div className="py-16 text-center">
+              <RefreshCw className="h-8 w-8 text-[#991B33] animate-spin mx-auto mb-3" />
+              <p className="text-sm text-[#78716C]">Loading your orders & live statuses...</p>
+            </div>
+          ) : displayedOrders.length === 0 && !notFound ? (
+            /* Empty State */
+            <div className="rounded-2xl border border-[#E7E2D9] bg-white p-10 text-center space-y-3 shadow-xs">
+              <ShoppingBag className="h-12 w-12 text-[#991B33]/60 mx-auto" />
+              <h3 className="font-heading text-lg font-bold text-[#1C1917]">No orders placed yet</h3>
+              <p className="text-xs text-[#78716C] max-w-sm mx-auto">
+                Once you place an export order for Scope Internationals electronics, you can track testing, customs, and delivery progress here.
+              </p>
+              <Link
+                to="/"
+                className="inline-flex items-center gap-2 mt-3 rounded-full px-6 py-2.5 text-xs font-bold uppercase tracking-wider bg-[#991B33] text-white hover:bg-[#7E1227] shadow-xs transition-colors"
+              >
+                <span>Browse Products</span>
+                <ChevronRight className="h-4 w-4" />
+              </Link>
+            </div>
+          ) : (
+            /* List of Orders One Below the Other */
+            <div className="space-y-8">
+              {displayedOrders.map((ord) => (
+                <OrderCard
+                  key={ord.order_number || ord.id}
+                  order={ord}
+                  STAGES={STAGES}
+                  getStageIndex={getStageIndex}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </main>
+
+      <Footer />
+      <CartDrawer />
+      <WishlistDrawer />
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
+    </div>
+  )
+}
+
+// ── COMPONENT: SINGLE ORDER CARD (One Below Other with Vertical Checkpoints) ──
+function OrderCard({
+  order,
+  STAGES,
+  getStageIndex
+}) {
+  const currentStageIndex = getStageIndex(order.status)
+  const items = order.items || order.order_items || []
+  const formattedDate = order.created_at
+    ? new Date(order.created_at).toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      })
+    : 'Recent Order'
+
+  // Map status to badge color & label
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case 'CANCELLED':
+      case 'CANCELED':
+        return {
+          bg: 'bg-red-500/15 border-red-500/40 text-red-400',
+          label: 'Cancelled by Seller',
+        }
+      case 'DELIVERED':
+        return {
+          bg: 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400',
+          label: 'Delivered',
+        }
+      case 'OUT_FOR_DELIVERY':
+        return {
+          bg: 'bg-cyan-500/15 border-cyan-500/40 text-cyan-400',
+          label: 'Out for Delivery',
+        }
+      case 'SHIPPED':
+      case 'IN_TRANSIT':
+        return {
+          bg: 'bg-indigo-500/15 border-indigo-500/40 text-indigo-300',
+          label: 'Shipped & In Transit',
+        }
+      case 'PACKED':
+        return {
+          bg: 'bg-amber-500/15 border-amber-500/40 text-amber-300',
+          label: 'Packed in Tin Box',
+        }
+      case 'CONFIRMED':
+        return {
+          bg: 'bg-gold/20 border-gold/50 text-gold',
+          label: 'Confirmed & Handcrafting',
+        }
+      case 'PLACED':
+      default:
+        return {
+          bg: 'bg-gold/15 border-gold/30 text-gold',
+          label: 'Order Placed',
+        }
+    }
+  }
+
+  const isCancelled =
+    order.status === 'CANCELLED' ||
+    order.status === 'CANCELED' ||
+    String(order.status || '').toUpperCase().includes('CANCEL')
+
+  let cancelDetails = null
+  try {
+    if (order.notes) {
+      const parsed = typeof order.notes === 'string' ? JSON.parse(order.notes) : order.notes
+      if (parsed && (parsed.cancelled_at || parsed.cancellation_reason || parsed.cancellation_source)) {
+        cancelDetails = parsed
+      }
+    }
+  } catch (e) {}
+
+  const badge = getStatusBadge(order.status)
+
+  return (
+    <div className={`rounded-2xl border shadow-sm overflow-hidden transition-all duration-300 ${
+      isCancelled
+        ? 'border-red-200 bg-white'
+        : 'border-[#E7E2D9] bg-white'
+    }`}>
+      {/* ── 1. Top Order Summary Header ── */}
+      <div className="border-b border-[#E7E2D9] bg-[#FAF8F5] px-5 py-4 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <span className="font-heading text-base font-extrabold text-[#1C1917] tracking-wide">
+            {order.order_number}
+          </span>
+          <span className="text-[#78716C]/50">·</span>
+          <span className="text-[#78716C]">Placed {formattedDate}</span>
+          <span className="text-[#78716C]/50">·</span>
+          <span className="text-[#78716C]">Recipient: <strong className="text-[#1C1917]">{order.customer_name}</strong></span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <span className="font-heading text-base font-bold text-[#991B33]">
+            ₹{order.total_amount}
+          </span>
+          <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-stone-100 border border-stone-200 text-[#78716C]">
+            {order.payment_method === 'PREPAID' ? 'Prepaid UPI' : 'COD'}
+          </span>
+        </div>
+      </div>
+
+      <div className="p-5 sm:p-6 space-y-6">
+        {/* ── 2. Product Items ── */}
+        <div className="space-y-4">
+          {items.length === 0 ? (
+            <div className="flex items-center gap-4">
+              <div className="h-20 w-20 rounded-2xl bg-[#FAF8F5] border border-[#E7E2D9] flex items-center justify-center text-[#991B33]">
+                <Package className="h-8 w-8" />
+              </div>
+              <div>
+                <h3 className="font-heading text-base font-bold text-[#1C1917]">Electronic Hardware</h3>
+                <p className="text-xs text-[#78716C]">Certified Export Quality</p>
+              </div>
+            </div>
+          ) : (
+            items.map((item, idx) => (
+              <div
+                key={item.product_id || item.id || idx}
+                className="flex flex-col sm:flex-row sm:items-start gap-4 pb-4 last:pb-0 border-b last:border-b-0 border-[#E7E2D9]"
+              >
+                {/* Main Product Image */}
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border border-[#E7E2D9] bg-[#FAF8F5] shrink-0 shadow-xs">
+                  {item.image ? (
+                    <img
+                      src={item.image}
+                      alt={item.name || item.product_name}
+                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-[#991B33] bg-[#FAF8F5]">
+                      <Package className="h-8 w-8" />
+                    </div>
+                  )}
+                </div>
+
+                {/* Side: Full Name of Product & Details */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+                    <h3 className="font-heading text-base sm:text-lg font-bold text-[#1C1917] tracking-tight truncate">
+                      {item.name || item.product_name || 'Electronic Hardware'}
+                    </h3>
+                    <span className="font-heading text-sm font-bold text-[#991B33] shrink-0">
+                      ₹{item.price * (item.quantity || 1)}
+                    </span>
+                  </div>
+
+                  <div className="mt-1 flex items-center gap-2 text-xs text-[#78716C]">
+                    <span>Qty: <strong className="text-[#1C1917]">{item.quantity || 1}</strong></span>
+                    <span>·</span>
+                    <span>₹{item.price} each</span>
+                    <span>·</span>
+                    <span className="text-[#991B33] font-medium">QC Verified</span>
+                  </div>
+
+                  {/* Below that: Status of the product */}
+                  <div className="mt-3 pt-3 border-t border-[#E7E2D9] flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold border ${badge.bg}`}>
+                        <span className="h-1.5 w-1.5 rounded-full bg-current animate-pulse" />
+                        {badge.label}
+                      </span>
+                      {isCancelled ? (
+                        <span className="text-xs font-semibold text-rose-600">
+                          Cancelled by Seller
+                        </span>
+                      ) : (
+                        <span className="text-xs text-[#78716C]">
+                          {order.shipment?.estimated_delivery
+                            ? `Est. Delivery: ${new Date(order.shipment.estimated_delivery).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' })}`
+                            : 'Estimated Delivery: 3-5 Days'}
+                        </span>
+                      )}
+                    </div>
+
+                    <span className="text-[11px] text-[#78716C] font-mono">
+                      Carrier: {order.shipment?.courier_partner || 'Scope Global Express'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* ── 3. Checkpoints or Dedicated Cancellation Notice ── */}
+        {isCancelled ? (
+          <div className="pt-4 border-t border-red-200 space-y-6">
+            {/* Prominent Red Cancellation & Refund Alert Card */}
+            <div className="rounded-2xl border border-rose-200 bg-rose-50/50 p-5 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-rose-200 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="h-11 w-11 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center shrink-0">
+                    <AlertCircle className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h4 className="font-heading text-base sm:text-lg font-bold text-rose-900">
+                      Order Cancelled by Seller
+                    </h4>
+                    <p className="text-xs text-rose-700">
+                      Package dispatch halted at fulfillment center
+                    </p>
+                  </div>
+                </div>
+
+                <span className="self-start sm:self-auto text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-rose-100 text-rose-800 border border-rose-200">
+                  Shipment Voided
+                </span>
+              </div>
+
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                <div className="space-y-1">
+                  <span className="text-[#78716C] uppercase tracking-wider text-[10px] font-semibold">
+                    Cancellation Reason
+                  </span>
+                  <p className="text-[#1C1917] font-medium">
+                    {cancelDetails?.cancellation_reason || 'Cancelled by seller in Scope Internationals portal'}
+                  </p>
+                </div>
+
+                <div className="space-y-1">
+                  <span className="text-[#78716C] uppercase tracking-wider text-[10px] font-semibold">
+                    Cancellation Time
+                  </span>
+                  <p className="text-[#1C1917] font-medium">
+                    {cancelDetails?.cancelled_at
+                      ? new Date(cancelDetails.cancelled_at).toLocaleString('en-IN', {
+                          dateStyle: 'medium',
+                          timeStyle: 'short',
+                        })
+                      : formattedDate}
+                  </p>
+                </div>
+              </div>
+
+              {/* Refund Notice */}
+              <div className="mt-4 p-3.5 rounded-xl bg-white border border-[#E7E2D9] flex items-start gap-3 shadow-xs">
+                <RotateCcw className="h-4 w-4 text-[#991B33] shrink-0 mt-0.5" />
+                <div className="text-xs leading-relaxed">
+                  {order.payment_method === 'PREPAID' ? (
+                    <p className="text-[#1C1917]">
+                      <strong className="text-[#991B33]">100% Refund Initiated:</strong> Your prepaid payment of <strong className="text-[#1C1917]">₹{order.total_amount}</strong> has been refunded to your original payment method and will reflect in 3–5 business days.
+                    </p>
+                  ) : (
+                    <p className="text-[#1C1917]">
+                      <strong>Cash on Delivery:</strong> No payment was collected. The order was cancelled before courier delivery.
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Help and Support */}
+              <div className="mt-4 pt-3 border-t border-rose-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+                <span className="text-[#78716C]">
+                  Questions regarding this consignment?
+                </span>
+                <div className="flex items-center gap-3">
+                  <a
+                    href={`mailto:exports@scopeinternationals.com?subject=Help with Cancelled Consignment ${order.order_number}`}
+                    className="inline-flex items-center gap-1.5 text-[#991B33] hover:underline font-semibold cursor-pointer"
+                  >
+                    <Headphones className="h-3.5 w-3.5" />
+                    <span>Contact Export Desk</span>
+                  </a>
+                  <span className="text-stone-300">·</span>
+                  <Link
+                    to="/"
+                    className="text-[#1C1917] hover:text-[#991B33] transition-colors font-semibold"
+                  >
+                    Explore Export Products →
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Cancelled Timeline State */}
+            <div className="relative pl-3 sm:pl-4 space-y-6 pt-2">
+              <div className="relative flex items-start gap-4 sm:gap-5">
+                <div className="h-9 w-9 sm:h-11 sm:w-11 rounded-full bg-[#991B33] text-white font-bold flex items-center justify-center shrink-0 shadow-md">
+                  <Check className="h-5 w-5 stroke-[2.5]" />
+                </div>
+                <div className="pt-1">
+                  <span className="font-mono text-xs text-[#991B33] font-bold italic">01</span>
+                  <h5 className="font-heading text-sm font-bold text-[#1C1917]">Order Placed</h5>
+                  <p className="text-xs text-[#78716C]">Order confirmed on Scope Internationals</p>
+                </div>
+              </div>
+
+              <div className="relative flex items-start gap-4 sm:gap-5">
+                <div className="h-9 w-9 sm:h-11 sm:w-11 rounded-full bg-rose-100 border-2 border-rose-500 text-rose-600 flex items-center justify-center shrink-0">
+                  <XCircle className="h-5 w-5" />
+                </div>
+                <div className="pt-1">
+                  <span className="font-mono text-xs text-rose-600 font-bold italic">02</span>
+                  <h5 className="font-heading text-sm font-bold text-rose-700">Cancelled by Seller</h5>
+                  <p className="text-xs text-[#78716C]">
+                    Dispatch stopped at fulfillment center. Live tracking halted.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* Standard 6-checkpoint pipeline */
+          <div className="pt-4 border-t border-[#E7E2D9]">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#78716C] mb-5 flex items-center gap-2">
+              <Clock className="h-4 w-4 text-[#991B33]" />
+              <span>Fulfillment Pipeline</span>
+            </h4>
+
+            <div className="relative pl-3 sm:pl-4 space-y-6 sm:space-y-7">
+              {/* Connected Vertical Progress Line */}
+              <div className="absolute left-[23px] sm:left-[27px] top-4 bottom-4 w-0.5 bg-[#E7E2D9]">
+                <div
+                  className="w-full bg-[#991B33] transition-all duration-700"
+                  style={{
+                    height: `${Math.min(100, (currentStageIndex / (STAGES.length - 1)) * 100)}%`,
+                  }}
+                />
+              </div>
+
+              {STAGES.map((stage, idx) => {
+                const isDone = idx <= currentStageIndex
+                const isCurrent = idx === currentStageIndex
+                const StageIcon = stage.icon || Check
+
+                return (
+                  <div key={stage.key} className="relative flex items-start gap-4 sm:gap-5 group">
+                    {/* Glowing Node on Vertical Line */}
+                    <div className="relative z-10 shrink-0">
+                      <div
+                        className={`h-9 w-9 sm:h-11 sm:w-11 rounded-full flex items-center justify-center transition-all duration-500 ${
+                          isCurrent
+                            ? 'bg-white border-2 border-[#991B33] text-[#991B33] ring-4 ring-[#991B33]/20 shadow-md scale-105'
+                            : isDone
+                            ? 'bg-[#991B33] text-white font-bold shadow-sm'
+                            : 'bg-white border border-[#E7E2D9] text-stone-400'
+                        }`}
+                      >
+                        {isDone && !isCurrent ? (
+                          <Check className="h-5 w-5 stroke-[2.5]" />
+                        ) : (
+                          <StageIcon className={`h-4 w-4 sm:h-5 sm:w-5 ${isCurrent ? 'animate-pulse' : ''}`} />
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Side Checkpoint Details: Step Number, Title, and Description */}
+                    <div className="flex-1 min-w-0 pt-0.5 sm:pt-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span
+                          className={`font-mono text-xs sm:text-sm font-extrabold italic tracking-wider ${
+                            isCurrent ? 'text-[#991B33]' : isDone ? 'text-[#991B33]/80' : 'text-stone-400'
+                          }`}
+                        >
+                          {stage.step}
+                        </span>
+                        <h5
+                          className={`font-heading text-sm sm:text-base font-bold tracking-tight ${
+                            isCurrent ? 'text-[#991B33]' : isDone ? 'text-[#1C1917]' : 'text-[#78716C]'
+                          }`}
+                        >
+                          {stage.label}
+                        </h5>
+                        {isCurrent && (
+                          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#FDF2F4] text-[#991B33] border border-[#F7CCD5] shrink-0">
+                            Active Stage
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-[#78716C] mt-1 leading-relaxed">
+                        {stage.desc}
+                      </p>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
