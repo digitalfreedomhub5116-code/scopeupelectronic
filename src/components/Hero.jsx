@@ -217,27 +217,27 @@ export default function Hero() {
 
       <div ref={ref} className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-        {/* ──────── MOBILE: Compact Centered Hero with Indian Social Proof ──────── */}
+        {/* ──────── MOBILE: Full-Screen Centered Hero with 4 Metric Boxes ──────── */}
         <div
-          className={`flex flex-col items-center justify-center text-center min-h-[calc(100svh-140px)] pt-36 pb-6 lg:hidden transition-all duration-700 ${
+          className={`flex flex-col items-center justify-center text-center min-h-[100svh] pt-32 pb-8 lg:hidden transition-all duration-700 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
           {/* Realistic Indian-Oriented Social Proof Pill */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 border border-[#E7E2D9] shadow-xs mb-4 backdrop-blur-sm">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 border border-[#E7E2D9] shadow-xs mb-3 backdrop-blur-sm">
             <div className="flex -space-x-1.5 overflow-hidden">
               <img
-                className="inline-block h-4.5 w-4.5 rounded-full ring-1.5 ring-white object-cover"
+                className="inline-block h-4 w-4 rounded-full ring-1 ring-white object-cover"
                 src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
                 alt="Buyer review"
               />
               <img
-                className="inline-block h-4.5 w-4.5 rounded-full ring-1.5 ring-white object-cover"
+                className="inline-block h-4 w-4 rounded-full ring-1 ring-white object-cover"
                 src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80"
                 alt="Buyer review"
               />
               <img
-                className="inline-block h-4.5 w-4.5 rounded-full ring-1.5 ring-white object-cover"
+                className="inline-block h-4 w-4 rounded-full ring-1 ring-white object-cover"
                 src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80"
                 alt="Buyer review"
               />
@@ -257,7 +257,7 @@ export default function Hero() {
           </h1>
 
           {/* Dual CTAs (Side by side for mobile vertical compactness) */}
-          <div className="mt-6 flex items-center justify-center gap-3 w-full max-w-xs px-2">
+          <div className="mt-4 flex items-center justify-center gap-2.5 w-full max-w-xs px-2">
             <button
               onClick={handleScrollToProducts}
               className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-full bg-[#991B33] hover:bg-[#7E1227] text-white px-4 py-2.5 text-xs font-bold tracking-wide transition-all shadow-md shadow-[#991B33]/20 active:scale-98 cursor-pointer whitespace-nowrap"
@@ -272,10 +272,53 @@ export default function Hero() {
               <span>Best Sellers</span>
             </button>
           </div>
+
+          {/* 4 Stat Metric Boxes (Embedded right in the Top Hero Section) */}
+          <div className="mt-6 grid grid-cols-2 gap-2.5 w-full max-w-sm px-2">
+            {/* Metric 1 */}
+            <div className="rounded-2xl bg-white border border-[#E7E2D9] p-3 text-center shadow-xs flex flex-col justify-center items-center">
+              <span className="font-serif text-xl sm:text-2xl font-bold text-[#1C1917]">
+                4.9 ★
+              </span>
+              <span className="text-[9px] font-bold tracking-wider text-[#78716C] uppercase mt-0.5 leading-tight">
+                Customer Satisfaction
+              </span>
+            </div>
+
+            {/* Metric 2: Crimson Highlight */}
+            <div className="rounded-2xl bg-white border border-[#E7E2D9] p-3 text-center shadow-xs flex flex-col justify-center items-center">
+              <span className="font-serif text-xl sm:text-2xl font-bold text-[#991B33]">
+                100%
+              </span>
+              <span className="text-[9px] font-bold tracking-wider text-[#78716C] uppercase mt-0.5 leading-tight">
+                Genuine Certified Tech
+              </span>
+            </div>
+
+            {/* Metric 3 */}
+            <div className="rounded-2xl bg-white border border-[#E7E2D9] p-3 text-center shadow-xs flex flex-col justify-center items-center">
+              <span className="font-serif text-xl sm:text-2xl font-bold text-[#1C1917]">
+                50,000+
+              </span>
+              <span className="text-[9px] font-bold tracking-wider text-[#78716C] uppercase mt-0.5 leading-tight">
+                Devices Delivered
+              </span>
+            </div>
+
+            {/* Metric 4: Emerald Green Highlight */}
+            <div className="rounded-2xl bg-white border border-[#E7E2D9] p-3 text-center shadow-xs flex flex-col justify-center items-center">
+              <span className="font-serif text-xl sm:text-2xl font-bold text-[#059669]">
+                24 - 48h
+              </span>
+              <span className="text-[9px] font-bold tracking-wider text-[#78716C] uppercase mt-0.5 leading-tight">
+                Express Courier Dispatch
+              </span>
+            </div>
+          </div>
         </div>
 
-        {/* ──────── MOBILE VIEW (< 1024px): PEEK-A-BOO BENTO PATTERN (Exact 40% on first load) ──────── */}
-        <div className="lg:hidden pb-16 pt-2 overflow-hidden -mx-4 px-4">
+        {/* ──────── MOBILE VIEW (< 1024px): BENTO CAROUSEL (Shifted below first screen, revealed on scroll) ──────── */}
+        <div className="lg:hidden pb-16 pt-4 overflow-hidden -mx-4 px-4">
           <div
             ref={carouselRef}
             className="flex gap-3 overflow-x-hidden no-scrollbar pb-2 pt-1 h-[340px] items-stretch"
@@ -690,9 +733,9 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* ──────── 4 STAT METRIC BOXES ──────── */}
+        {/* ──────── 4 STAT METRIC BOXES (Desktop view below bento) ──────── */}
         <div
-          className={`mt-12 sm:mt-16 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 transition-all duration-700 delay-300 ${
+          className={`hidden lg:grid mt-12 sm:mt-16 grid-cols-4 gap-4 transition-all duration-700 delay-300 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
           }`}
         >
