@@ -142,14 +142,14 @@ export async function createOrder(orderPayload) {
       id: 'evt-1',
       status: 'PLACED',
       activity: 'Order placed & payment verified',
-      location: 'Scope Internationals Global Portal',
+      location: 'Scope Internationals Flagship Store',
       event_time: new Date().toISOString(),
     },
     {
       id: 'evt-2',
       status: 'CONFIRMED',
-      activity: 'Order confirmed: Hardware allocated for QC & compliance testing',
-      location: 'Scope Internationals Export Hub, Bengaluru',
+      activity: 'Order confirmed: Hardware allocated for QC inspection & packaging',
+      location: 'Scope Internationals Central Facility, Bengaluru',
       event_time: new Date(Date.now() + 1000 * 60 * 5).toISOString(),
     },
   ]
@@ -455,8 +455,8 @@ export function advanceOrderStatus(orderNumber) {
     }
 
     const activityMap = {
-      PACKED: { activity: 'Hardware inspected and sealed in export transit casing with QC certificate', location: 'Scope Internationals Fulfillment Hub, Bengaluru' },
-      SHIPPED: { activity: 'Handed over to logistics carrier partner (Air Cargo Express)', location: 'Bengaluru Sort Facility' },
+      PACKED: { activity: 'Hardware inspected and sealed in signature presentation box with warranty card', location: 'Scope Internationals Central Facility, Bengaluru' },
+      SHIPPED: { activity: 'Handed over to express courier partner (Blue Dart Express)', location: 'Bengaluru Sort Facility' },
       IN_TRANSIT: { activity: 'Package in transit between distribution hubs', location: 'National Sorting Center' },
       OUT_FOR_DELIVERY: { activity: 'Out for delivery with courier delivery executive', location: order.shipping_address?.city || 'Local Delivery Hub' },
       DELIVERED: { activity: 'Delivered to customer. Signature verified', location: order.shipping_address?.city || 'Destination Address' },

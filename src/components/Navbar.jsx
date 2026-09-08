@@ -52,7 +52,7 @@ export default function Navbar({ visible = true }) {
                 <span className="text-[#991B33]">INTERNATIONALS</span>
               </div>
               <span className="text-[9px] sm:text-[10px] font-semibold tracking-[0.2em] text-[#78716C] uppercase leading-tight">
-                GLOBAL ELECTRONICS & EXPORTS
+                PREMIUM ELECTRONICS & TECH
               </span>
             </div>
           </Link>
@@ -70,7 +70,7 @@ export default function Navbar({ visible = true }) {
               className="text-xs font-semibold text-[#57534E] transition-colors hover:text-[#991B33] tracking-wider uppercase flex items-center gap-1.5 cursor-pointer"
             >
               <span className="text-[#991B33]">✦</span>
-              <span>EXPORT PRODUCTS</span>
+              <span>ALL PRODUCTS</span>
             </button>
             <button
               onClick={() => handleNavClick('#genres')}
@@ -82,27 +82,27 @@ export default function Navbar({ visible = true }) {
               onClick={() => handleNavClick('#feature')}
               className="text-xs font-semibold text-[#57534E] transition-colors hover:text-[#991B33] tracking-wider uppercase cursor-pointer"
             >
-              STANDARDS & QC
+              CRAFTSMANSHIP
             </button>
             <Link
               to="/track-order"
               className="text-xs font-semibold text-[#57534E] transition-colors hover:text-[#991B33] tracking-wider uppercase flex items-center gap-1.5"
             >
               <Truck className="h-3.5 w-3.5 text-[#991B33]" />
-              <span>ORDERS & TRACK</span>
+              <span>TRACK ORDER</span>
             </Link>
           </div>
 
-          {/* Right Actions: Language Selector, Request Quotation Button, Account, Wishlist, Cart */}
+          {/* Right Actions: Currency Selector, Shop Button, Account, Wishlist, Bag */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Language Selector Pill (Matching Reference Image) */}
+            {/* Currency Selector Pill */}
             <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-[#E7E2D9] bg-white text-[11px] font-semibold text-[#44403C]">
-              <span>🇬🇧</span>
-              <span>English</span>
+              <span>🇮🇳</span>
+              <span>INR (₹)</span>
               <span className="text-[10px] text-[#A8A29E]">▾</span>
             </div>
 
-            {/* "Request Export Quotation" Crimson Button (Matching Reference Image) */}
+            {/* "Shop Collection" Crimson Button (Matching Reference Image) */}
             <button
               onClick={() => {
                 const el = document.querySelector('#products')
@@ -110,7 +110,7 @@ export default function Navbar({ visible = true }) {
               }}
               className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-[#991B33] hover:bg-[#7E1227] text-white px-4 py-2 sm:px-5 sm:py-2.5 text-xs font-bold tracking-wide transition-all shadow-sm hover:shadow-md hover:shadow-[#991B33]/20 cursor-pointer"
             >
-              <span>Request Export Quotation</span>
+              <span>Shop Collection</span>
             </button>
 
             {/* Auth Account Button */}
@@ -118,7 +118,7 @@ export default function Navbar({ visible = true }) {
               onClick={() => setIsAuthOpen(true)}
               className="group rounded-full p-2 text-[#57534E] transition-all hover:bg-white hover:text-[#991B33] hover:shadow-sm cursor-pointer"
               aria-label="Account"
-              title="Customer & Importer Account"
+              title="My Account"
             >
               <User className="h-5 w-5" strokeWidth={1.75} />
             </button>
@@ -149,12 +149,12 @@ export default function Navbar({ visible = true }) {
               )}
             </button>
 
-            {/* Cart / RFQ Items */}
+            {/* Shopping Bag */}
             <button
               onClick={toggleCart}
-              className="group relative rounded-full p-2 text-[#57534E] transition-all hover:bg-white hover:text-[#991B33] hover:shadow-sm"
-              aria-label="Cart & Quotation"
-              title="View Cart / Quote"
+              className="group relative rounded-full p-2 text-[#57534E] transition-all hover:bg-white hover:text-[#991B33] hover:shadow-sm cursor-pointer"
+              aria-label="Shopping Bag"
+              title="View Shopping Bag"
             >
               <ShoppingBag className="h-5 w-5" strokeWidth={1.75} />
               {itemCount > 0 && (
@@ -198,19 +198,19 @@ export default function Navbar({ visible = true }) {
               onClick={() => handleNavClick('#products')}
               className="text-left text-xs font-bold text-[#57534E] hover:text-[#991B33] tracking-wider uppercase py-1"
             >
-              EXPORT PRODUCTS
+              ALL PRODUCTS
             </button>
             <button
               onClick={() => handleNavClick('#genres')}
               className="text-left text-xs font-bold text-[#57534E] hover:text-[#991B33] tracking-wider uppercase py-1"
             >
-              EXPORT CATEGORIES
+              CATEGORIES
             </button>
             <button
               onClick={() => handleNavClick('#feature')}
               className="text-left text-xs font-bold text-[#57534E] hover:text-[#991B33] tracking-wider uppercase py-1"
             >
-              STANDARDS & QC
+              CRAFTSMANSHIP
             </button>
             <Link
               to="/track-order"
@@ -218,7 +218,7 @@ export default function Navbar({ visible = true }) {
               className="flex items-center gap-2 text-xs font-bold text-[#57534E] hover:text-[#991B33] tracking-wider uppercase py-1"
             >
               <Truck className="h-4 w-4 text-[#991B33]" />
-              <span>ORDERS & TRACK</span>
+              <span>TRACK ORDER</span>
             </Link>
             <button
               onClick={() => {
@@ -228,7 +228,7 @@ export default function Navbar({ visible = true }) {
               className="flex items-center gap-2 text-left text-xs font-bold text-[#57534E] hover:text-[#991B33] tracking-wider uppercase py-1"
             >
               <User className="h-4 w-4 text-[#991B33]" />
-              <span>ACCOUNT & ORDERS</span>
+              <span>MY ACCOUNT</span>
             </button>
             <div className="pt-2">
               <button
@@ -237,9 +237,9 @@ export default function Navbar({ visible = true }) {
                   const el = document.querySelector('#products')
                   if (el) el.scrollIntoView({ behavior: 'smooth' })
                 }}
-                className="w-full text-center rounded-full bg-[#991B33] py-2.5 text-xs font-bold text-white shadow-md"
+                className="w-full text-center rounded-full bg-[#991B33] py-2.5 text-xs font-bold text-white shadow-md cursor-pointer"
               >
-                Request Export Quotation
+                Shop Collection
               </button>
             </div>
           </div>

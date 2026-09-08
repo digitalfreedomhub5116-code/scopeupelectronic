@@ -149,7 +149,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
           <div className="flex items-center gap-2">
             <User className="h-4 w-4 text-[#991B33]" />
             <h3 className="font-heading text-base font-bold text-[#1C1917]">
-              {currentUser ? 'Client Account & Orders' : isSignUp ? 'Register Importer Account' : 'Client & Importer Sign In'}
+              {currentUser ? 'My Account & Orders' : isSignUp ? 'Create Scope Account' : 'Customer Sign In'}
             </h3>
           </div>
           <button
@@ -344,7 +344,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
                 {loading ? (
                   <RefreshCw className="w-4 h-4 text-white animate-spin" />
                 ) : (
-                  <span>{isSignUp ? 'Create Importer Account' : 'Sign In to Account'}</span>
+                  <span>{isSignUp ? 'Create Scope Account' : 'Sign In to Account'}</span>
                 )}
               </button>
 

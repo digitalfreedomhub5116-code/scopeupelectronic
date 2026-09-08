@@ -49,34 +49,34 @@ export default function OrderTrackingPage() {
   const [searchLoading, setSearchLoading] = useState(false)
   const [notFound, setNotFound] = useState(false)
 
-  // 6 Checkpoints matching Scope Internationals export fulfillment pipeline
+  // 6 Checkpoints matching Scope Internationals fulfillment pipeline
   const STAGES = [
     {
       key: 'PLACED',
       step: '01',
-      label: 'Order Registered',
-      desc: 'Order registered and queued for hardware allocation',
+      label: 'Order Confirmed',
+      desc: 'Order confirmed and queued for fulfillment',
       icon: CheckCircle2,
     },
     {
       key: 'CONFIRMED',
       step: '02',
-      label: 'Quality Tested & Certified',
-      desc: 'Hardware precision-tested and validated against ISO9001 compliance',
+      label: 'Quality Checked & Certified',
+      desc: 'Hardware precision-tested and validated for zero defects',
       icon: Sparkles,
     },
     {
       key: 'PACKED',
       step: '03',
-      label: 'Export Packaged & Sealed',
-      desc: 'Sealed in reinforced transit packaging with compliance docs',
+      label: 'Premium Packaged & Sealed',
+      desc: 'Sealed in signature presentation box with official warranty',
       icon: Package,
     },
     {
       key: 'SHIPPED',
       step: '04',
       label: 'Dispatched & In Transit',
-      desc: 'Handed over to freight / air express courier partner',
+      desc: 'Handed over to express courier partner (Blue Dart / Delhivery)',
       icon: Truck,
     },
     {
@@ -234,13 +234,13 @@ export default function OrderTrackingPage() {
         {/* Page Header */}
         <div className="text-center max-w-2xl mx-auto mb-8">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-[#F7CCD5] bg-[#FDF2F4] px-3.5 py-1 text-xs font-semibold text-[#991B33] mb-3">
-            <Truck className="h-3.5 w-3.5" /> Global Logistics & Export Tracking
+            <Truck className="h-3.5 w-3.5" /> Courier Logistics & Live Tracking
           </span>
           <h1 className="font-heading text-3xl sm:text-4xl font-extrabold text-[#1C1917] tracking-tight">
             Orders & Live Tracking
           </h1>
           <p className="mt-2 text-xs sm:text-sm text-[#78716C]">
-            Track your electronics consignments and export shipments in realtime from testing to final delivery.
+            Track your electronics orders and courier shipments in realtime from packaging to your doorstep.
           </p>
 
           {/* Search Form */}
@@ -285,9 +285,9 @@ export default function OrderTrackingPage() {
                 </>
               ) : (
                 <>
-                  <p className="text-sm font-bold text-[#1C1917]">Guest Client</p>
+                  <p className="text-sm font-bold text-[#1C1917]">Guest Customer</p>
                   <p className="text-xs text-[#78716C]">
-                    Sign in to automatically access and track all your active export consignments.
+                    Sign in to automatically access and track all your active orders.
                   </p>
                 </>
               )}
@@ -297,7 +297,7 @@ export default function OrderTrackingPage() {
           <div className="flex items-center gap-3 shrink-0">
             {currentUser ? (
               <span className="text-xs font-bold text-[#991B33] px-3 py-1 rounded-full bg-[#FDF2F4] border border-[#F7CCD5]">
-                {displayedOrders.length} {displayedOrders.length === 1 ? 'Consignment' : 'Consignments'}
+                {displayedOrders.length} {displayedOrders.length === 1 ? 'Order' : 'Orders'}
               </span>
             ) : (
               <button
@@ -327,7 +327,7 @@ export default function OrderTrackingPage() {
           <div className="flex items-center justify-between pb-2 border-b border-[#E7E2D9]">
             <h2 className="font-heading text-xl font-bold text-[#1C1917] flex items-center gap-2">
               <Package className="h-5 w-5 text-[#991B33]" />
-              <span>Consignments & Orders</span>
+              <span>Orders & Shipments</span>
             </h2>
             {query.trim() && (
               <button
@@ -355,7 +355,7 @@ export default function OrderTrackingPage() {
               <ShoppingBag className="h-12 w-12 text-[#991B33]/60 mx-auto" />
               <h3 className="font-heading text-lg font-bold text-[#1C1917]">No orders placed yet</h3>
               <p className="text-xs text-[#78716C] max-w-sm mx-auto">
-                Once you place an export order for Scope Internationals electronics, you can track testing, customs, and delivery progress here.
+                Once you place an order for Scope Internationals electronics, you can track testing, packaging, and delivery progress here.
               </p>
               <Link
                 to="/"
@@ -504,7 +504,7 @@ function OrderCard({
               </div>
               <div>
                 <h3 className="font-heading text-base font-bold text-[#1C1917]">Electronic Hardware</h3>
-                <p className="text-xs text-[#78716C]">Certified Export Quality</p>
+                <p className="text-xs text-[#78716C]">Certified Flagship Quality</p>
               </div>
             </div>
           ) : (
@@ -646,22 +646,22 @@ function OrderCard({
               {/* Help and Support */}
               <div className="mt-4 pt-3 border-t border-rose-200 flex flex-wrap items-center justify-between gap-3 text-xs">
                 <span className="text-[#78716C]">
-                  Questions regarding this consignment?
+                  Questions regarding this order?
                 </span>
                 <div className="flex items-center gap-3">
                   <a
-                    href={`mailto:exports@scopeinternationals.com?subject=Help with Cancelled Consignment ${order.order_number}`}
+                    href={`mailto:support@scopeinternationals.com?subject=Help with Order ${order.order_number}`}
                     className="inline-flex items-center gap-1.5 text-[#991B33] hover:underline font-semibold cursor-pointer"
                   >
                     <Headphones className="h-3.5 w-3.5" />
-                    <span>Contact Export Desk</span>
+                    <span>Contact Concierge Desk</span>
                   </a>
                   <span className="text-stone-300">·</span>
                   <Link
                     to="/"
                     className="text-[#1C1917] hover:text-[#991B33] transition-colors font-semibold"
                   >
-                    Explore Export Products →
+                    Explore Flagship Products →
                   </Link>
                 </div>
               </div>

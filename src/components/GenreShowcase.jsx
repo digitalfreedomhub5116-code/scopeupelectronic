@@ -53,10 +53,10 @@ function CategoryCard({ genre, index }) {
             {genre.label}
           </h3>
           <p className="text-xs text-stone-200/90 font-medium block mt-1 line-clamp-1">
-            {genre.description || `${visibleCount} Export Hardware Models`}
+            {genre.description || `${visibleCount} Flagship Devices`}
           </p>
           <span className="inline-block mt-2 px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider">
-            {visibleCount} Models Certified
+            {visibleCount} Flagship Models
           </span>
         </div>
 
@@ -82,19 +82,19 @@ export default function GenreShowcase() {
         >
           <div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-[#FDF2F4] text-[#991B33] border border-[#F7CCD5] mb-3">
-              <span>GLOBAL PRODUCT VERTICALS</span>
+              <span>CURATED TECH COLLECTIONS</span>
             </div>
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1C1917] tracking-tight">
-              Export Product Categories
+              Shop by Category
             </h2>
             <p className="mt-2.5 max-w-xl text-sm sm:text-base leading-relaxed text-[#57534E]">
-              Explore certified high-precision electronic equipment catalogued across specialized industrial and consumer verticals.
+              Explore high-fidelity audio, titanium smart wearables, GaN fast charging, and pro peripherals crafted for discerning tech lovers.
             </p>
           </div>
 
           <div className="hidden sm:block">
             <span className="text-xs font-bold text-[#78716C] uppercase tracking-wider">
-              {GENRES.length} Verified Segments
+              {GENRES.length} Premium Collections
             </span>
           </div>
         </div>

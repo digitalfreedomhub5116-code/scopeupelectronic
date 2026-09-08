@@ -178,7 +178,7 @@ export default function ProductPage() {
             to="/"
             className="inline-flex items-center gap-2 mt-6 rounded-full px-6 py-3 text-xs font-bold uppercase tracking-widest bg-[#991B33] text-white hover:bg-[#7E1227] transition-colors"
           >
-            <ArrowLeft className="h-4 w-4" /> Back to Export Catalog
+            <ArrowLeft className="h-4 w-4" /> Back to Catalog
           </Link>
         </div>
         <Footer />
@@ -272,7 +272,7 @@ export default function ProductPage() {
               className="text-xs text-[#78716C] hover:text-[#991B33] transition-colors flex items-center gap-1 whitespace-nowrap flex-shrink-0 pl-2"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Back to</span> {genreData ? genreData.label : 'Export Catalog'}
+              <span className="hidden sm:inline">Back to</span> {genreData ? genreData.label : 'Catalog'}
             </Link>
           </div>
         </div>
@@ -483,7 +483,7 @@ export default function ProductPage() {
                   {product.rating}
                 </span>
                 <span className="text-xs text-[#78716C] underline decoration-[#991B33]/40 group-hover/rate:text-[#991B33] transition-colors">
-                  {product.reviewCount} verified importer reviews
+                  {product.reviewCount} verified buyer reviews
                 </span>
               </div>
 
@@ -501,19 +501,19 @@ export default function ProductPage() {
                   </span>
                 </div>
                 <p className="mt-1.5 text-xs text-[#78716C]">
-                  All prices benchmarked in INR. Standard Logistics & Handling: ₹60.
+                  All prices inclusive of taxes. Standard Courier Delivery: ₹60.
                 </p>
 
                 {/* Stock status */}
                 {!isOutOfStock ? (
                   <div className="mt-3 flex items-center gap-2 text-xs font-semibold text-emerald-700">
                     <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
-                    <span>In Stock · Factory Dispatched within 24 Hours</span>
+                    <span>In Stock · Dispatched within 24 Hours</span>
                   </div>
                 ) : (
                   <div className="mt-3 flex items-center gap-2 text-xs font-semibold text-rose-600">
                     <span className="h-2 w-2 rounded-full bg-rose-500" />
-                    <span>Currently In Backorder · Contact export desk</span>
+                    <span>Currently In Backorder · Notification sent upon restock</span>
                   </div>
                 )}
               </div>
@@ -543,7 +543,7 @@ export default function ProductPage() {
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-4 w-4 text-[#991B33] flex-shrink-0 mt-0.5" />
-                        <span>Reinforced packaging designed for global transit safety</span>
+                        <span>Signature gift packaging designed for transit protection</span>
                       </li>
                     </>
                   )}
@@ -563,22 +563,22 @@ export default function ProductPage() {
                 }`}
               >
                 <ShoppingBag className="h-5 w-5" />
-                <span>{isOutOfStock ? 'Out of Stock' : 'Add to Export Order'}</span>
+                <span>{isOutOfStock ? 'Out of Stock' : 'Add to Bag'}</span>
               </button>
 
               {/* Assurance Trust Badges */}
               <div className="mt-5 grid grid-cols-3 gap-2 text-center">
                 <div className="p-2.5 rounded-xl bg-white border border-[#E7E2D9] shadow-xs">
                   <Truck className="h-4 w-4 mx-auto text-[#991B33] mb-1" />
-                  <span className="text-[10px] text-[#78716C] font-medium block">Express Cargo Logistics</span>
+                  <span className="text-[10px] text-[#78716C] font-medium block">Express Courier Delivery</span>
                 </div>
                 <div className="p-2.5 rounded-xl bg-white border border-[#E7E2D9] shadow-xs">
                   <ShieldCheck className="h-4 w-4 mx-auto text-[#991B33] mb-1" />
-                  <span className="text-[10px] text-[#78716C] font-medium block">100% QC Certification</span>
+                  <span className="text-[10px] text-[#78716C] font-medium block">2-Year Direct Warranty</span>
                 </div>
                 <div className="p-2.5 rounded-xl bg-white border border-[#E7E2D9] shadow-xs">
                   <RotateCcw className="h-4 w-4 mx-auto text-[#991B33] mb-1" />
-                  <span className="text-[10px] text-[#78716C] font-medium block">Warranty & Spares</span>
+                  <span className="text-[10px] text-[#78716C] font-medium block">7-Day Replacement</span>
                 </div>
               </div>
             </div>
@@ -599,7 +599,7 @@ export default function ProductPage() {
             <div className="mt-8 rounded-2xl border border-[#E7E2D9] bg-white shadow-xs overflow-hidden">
               <div className="px-6 py-4 border-b border-[#E7E2D9] bg-[#FAF8F5]">
                 <h3 className="font-heading text-base font-bold text-[#1C1917]">
-                  Export Engineering Specifications
+                  Technical & Engineering Specifications
                 </h3>
               </div>
               <div className="divide-y divide-[#E7E2D9] text-sm">
@@ -627,7 +627,7 @@ export default function ProductPage() {
                   </>
                 )}
                 <div className="grid grid-cols-3 px-6 py-3.5">
-                  <span className="text-[#78716C] font-medium">Standard Vertical</span>
+                  <span className="text-[#78716C] font-medium">Product Category</span>
                   <span className="col-span-2 font-semibold text-[#1C1917]">{genreData ? genreData.label : product.genre}</span>
                 </div>
               </div>
@@ -640,10 +640,10 @@ export default function ProductPage() {
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8 mb-10">
             <div>
               <h2 className="font-heading text-2xl sm:text-3xl font-bold text-[#1C1917]">
-                Buyer & Importer Feedback
+                Customer Feedback & Reviews
               </h2>
               <p className="mt-1 text-sm text-[#78716C]">
-                Verified distributor and procurement reviews on {product.fullName}
+                Verified owner reviews and performance ratings on {product.fullName}
               </p>
             </div>
 
@@ -694,7 +694,7 @@ export default function ProductPage() {
                         {rev.name}
                       </span>
                       <span className="text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200 inline-flex items-center gap-1 font-medium">
-                        <CheckCircle2 className="h-3 w-3 text-emerald-600" /> Verified Importer
+                        <CheckCircle2 className="h-3 w-3 text-emerald-600" /> Verified Buyer
                       </span>
                     </div>
                   </div>
@@ -748,7 +748,7 @@ export default function ProductPage() {
         {relatedProducts.length > 0 && (
           <div className="mt-24 pt-10 border-t border-[#E7E2D9]">
             <h3 className="font-heading text-xl sm:text-2xl font-bold text-[#1C1917] mb-6">
-              More from {genreData ? genreData.label : 'Export Vertical'}
+              More from {genreData ? genreData.label : 'Collection'}
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {relatedProducts.map((rel) => (
@@ -815,7 +815,7 @@ export default function ProductPage() {
             }`}
           >
             <ShoppingBag className="h-4 w-4" />
-            <span>{isOutOfStock ? 'Out of Stock' : 'Add to Order'}</span>
+            <span>{isOutOfStock ? 'Out of Stock' : 'Add to Bag'}</span>
           </button>
         </div>
       </div>

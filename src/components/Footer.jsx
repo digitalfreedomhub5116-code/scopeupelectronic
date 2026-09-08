@@ -34,14 +34,14 @@ export default function Footer() {
               </div>
             </Link>
             <p className="mt-3.5 max-w-xs text-xs sm:text-sm leading-relaxed text-[#78716C]">
-              Direct-from-source global export supply chain delivering certified high-precision electronics, smart audio, and GaN power gear to 50+ countries worldwide.
+              Direct flagship consumer electronics brand crafting studio-grade audio, titanium smart wearables, and high-performance GaN charging stations.
             </p>
           </div>
 
-          {/* Export Verticals */}
+          {/* Product Categories */}
           <div>
             <h4 className="text-xs font-bold tracking-[0.15em] text-[#1C1917] uppercase">
-              Product Verticals
+              Tech Collections
             </h4>
             <ul className="mt-4 space-y-2.5">
               {GENRES.map((g) => (
@@ -57,13 +57,13 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Corporate & RFQ */}
+          {/* Customer Care */}
           <div>
             <h4 className="text-xs font-bold tracking-[0.15em] text-[#1C1917] uppercase">
-              Export Operations
+              Customer Care
             </h4>
             <ul className="mt-4 space-y-2.5">
-              {['About Scope Hub', 'Quality & QC Protocols', 'Ocean & Air Freight', 'Customs & Compliance'].map((link) => (
+              {['About Scope', 'Warranty & Support', 'Shipping & Delivery', 'Returns & Exchanges'].map((link) => (
                 <li key={link}>
                   <a href="#" className="text-xs sm:text-sm text-[#78716C] transition-colors hover:text-[#991B33]">
                     {link}
@@ -87,18 +87,18 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Quotation & Catalog Updates */}
+          {/* Newsletter */}
           <div>
             <h4 className="text-xs font-bold tracking-[0.15em] text-[#1C1917] uppercase">
-              Export Catalog Dispatch
+              Scope Newsletter
             </h4>
             <p className="mt-4 text-xs sm:text-sm text-[#78716C]">
-              Receive quarterly wholesale price tiers and hardware spec-sheets.
+              Subscribe to receive private preview access to new flagship releases and member privileges.
             </p>
             <div className="mt-3 flex shadow-xs">
               <input
                 type="email"
-                placeholder="buyer@enterprise.com"
+                placeholder="name@domain.com"
                 className="flex-1 rounded-l-full border border-[#E7E2D9] bg-white px-3.5 py-2.5 text-xs sm:text-sm text-[#1C1917] placeholder-[#A8A29E] outline-none transition-colors focus:border-[#991B33]"
               />
               <button className="rounded-r-full bg-[#991B33] hover:bg-[#7E1227] px-4 py-2.5 text-white transition-all cursor-pointer">
@@ -111,10 +111,10 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="mt-12 flex flex-col items-center gap-3 border-t border-[#E7E2D9] pt-6 sm:flex-row sm:justify-between">
           <p className="text-xs text-[#78716C]">
-            © 2026 Scope Internationals. All rights reserved. Precision electronics export.
+            © 2026 Scope Internationals. All rights reserved. Flagship consumer electronics & acoustics.
           </p>
           <div className="flex items-center gap-5">
-            {['Privacy Policy', 'Export Terms', 'Shipping & Incoterms'].map((link) => (
+            {['Privacy Policy', 'Terms of Service', 'Warranty Policy'].map((link) => (
               <a key={link} href="#" className="text-xs text-[#78716C] transition-colors hover:text-[#991B33]">
                 {link}
               </a>

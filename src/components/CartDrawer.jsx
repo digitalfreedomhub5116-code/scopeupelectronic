@@ -129,7 +129,7 @@ export default function CartDrawer() {
         <div className="flex items-center justify-between border-b border-[#E7E2D9] px-5 py-4 bg-[#FAF8F5]">
           <div className="flex items-center gap-2.5">
             <ShoppingBag className="h-5 w-5 text-[#991B33]" strokeWidth={1.75} />
-            <h2 className="font-heading text-lg font-bold text-[#1C1917]">Export Order Cart</h2>
+            <h2 className="font-heading text-lg font-bold text-[#1C1917]">Shopping Bag</h2>
             {count > 0 && (
               <span className="rounded-full bg-[#FDF2F4] px-2.5 py-0.5 text-xs font-bold text-[#991B33] border border-[#F7CCD5]">
                 {count} {count === 1 ? 'item' : 'items'}
@@ -139,7 +139,7 @@ export default function CartDrawer() {
           <button
             onClick={closeCart}
             className="rounded-full p-2 text-[#78716C] transition-colors hover:bg-[#F0EBE3] hover:text-[#1C1917]"
-            aria-label="Close cart"
+            aria-label="Close bag"
           >
             <X className="h-5 w-5" strokeWidth={1.5} />
           </button>
@@ -151,16 +151,16 @@ export default function CartDrawer() {
             <div className="flex h-full flex-col items-center justify-center text-center">
               <ShoppingBag className="mb-4 h-16 w-16 text-[#D6D0C5]" strokeWidth={1} />
               <p className="font-heading text-lg font-bold text-[#1C1917]">
-                Your export cart is empty
+                Your shopping bag is empty
               </p>
               <p className="mt-1 text-xs text-[#78716C] max-w-xs">
-                Select export electronics, audio devices, or smart hardware to place an order or quotation.
+                Explore our flagship audio, titanium wearables, and smart accessories to add to your order.
               </p>
               <button
                 onClick={closeCart}
                 className="mt-6 rounded-full border border-[#991B33] px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-[#991B33] transition-all hover:bg-[#991B33] hover:text-white"
               >
-                Explore Export Catalog
+                Explore Flagship Collection
               </button>
             </div>
           ) : (
@@ -186,13 +186,13 @@ export default function CartDrawer() {
 
             {/* Shipping */}
             <div className="mb-2 flex items-center justify-between text-xs text-[#78716C]">
-              <span>Standard Logistics / Handling</span>
+              <span>Standard Courier Delivery</span>
               <span className="font-semibold text-[#1C1917]">₹60</span>
             </div>
 
             {totalSavings > 0 && (
               <div className="mb-3 flex items-center justify-between rounded-lg bg-emerald-50 border border-emerald-200 px-3 py-1.5">
-                <span className="text-xs font-semibold text-emerald-800">Export Tier Savings</span>
+                <span className="text-xs font-semibold text-emerald-800">Special Discount Savings</span>
                 <span className="text-xs font-bold text-emerald-800">Save ₹{totalSavings}</span>
               </div>
             )}

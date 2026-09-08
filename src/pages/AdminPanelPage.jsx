@@ -434,7 +434,7 @@ export default function AdminPanelPage() {
   // Settings State
   const [settings, setSettings] = useState({
     storeName: 'Scope Internationals',
-    contactEmail: 'export@scopeinternationals.com',
+    contactEmail: 'support@scopeinternationals.com',
     contactPhone: '+91 98201 98201',
     defaultShippingFee: 60,
     freeShippingThreshold: 999,
@@ -1656,9 +1656,9 @@ export default function AdminPanelPage() {
                       <span className="font-medium text-cream">3 - 4 Days</span>
                     </div>
                     <div className="flex justify-between text-xs">
-                      <span className="text-cream-muted/70">Auto-AWB Manifest:</span>
+                      <span className="text-cream-muted/70">Auto-AWB Dispatch:</span>
                       <span className="text-gold font-medium">
-                        {dispatchedOrdersCount} Manifested Shipments (Shiprocket Live)
+                        {dispatchedOrdersCount} Dispatched Shipments (Shiprocket Live)
                       </span>
                     </div>
                   </div>
@@ -2633,7 +2633,7 @@ export default function AdminPanelPage() {
                           <span>Add New Electronic Product</span>
                         </h3>
                         <p className="text-xs text-cream-muted/60 mt-0.5">
-                          List a new export-ready certified electronic product with specifications
+                          List a new certified flagship electronic product with specifications
                         </p>
                       </div>
                       <button

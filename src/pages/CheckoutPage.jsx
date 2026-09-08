@@ -383,9 +383,9 @@ export default function CheckoutPage() {
           <div className="h-16 w-16 mx-auto rounded-full bg-white flex items-center justify-center border border-[#E7E2D9] shadow-sm mb-4">
             <ShoppingBag className="h-8 w-8 text-[#991B33]" />
           </div>
-          <h2 className="font-heading text-2xl font-bold text-[#1C1917]">Your Manifest is Empty</h2>
+          <h2 className="font-heading text-2xl font-bold text-[#1C1917]">Your Bag is Empty</h2>
           <p className="mt-2 text-sm text-[#78716C]">
-            Please add electronic products to your export manifest to proceed with checkout.
+            Please add electronic products to your shopping bag to proceed with checkout.
           </p>
           <Link
             to="/"
@@ -555,7 +555,7 @@ export default function CheckoutPage() {
                     Signed in as <span className="text-[#991B33] font-bold">{currentUser.name || currentUser.email}</span>
                   </>
                 ) : (
-                  'Guest Importer Checkout (Addresses saved locally)'
+                  'Guest Checkout (Addresses saved locally)'
                 )}
               </p>
               {currentUser?.email && (
@@ -755,7 +755,7 @@ export default function CheckoutPage() {
                 <MapPin className="h-10 w-10 mx-auto text-[#991B33]" />
                 <h3 className="font-heading text-lg font-bold text-[#1C1917]">No saved addresses yet</h3>
                 <p className="text-xs text-[#78716C] max-w-sm mx-auto">
-                  Add your shipping or cargo consignee address below. It will be saved permanently to your account for all future orders.
+                  Add your shipping delivery address below. It will be saved permanently to your account for all future orders.
                 </p>
                 <button
                   onClick={() => {
@@ -1013,7 +1013,7 @@ export default function CheckoutPage() {
                       required
                       value={formStreet}
                       onChange={(e) => setFormStreet(e.target.value)}
-                      placeholder="e.g. Tech Park Phase 2, Export Zone"
+                      placeholder="e.g. Flat 402, Prestige Tower, MG Road"
                       className="w-full rounded-xl border border-[#E7E2D9] bg-[#FAF8F5] px-3.5 py-2.5 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:border-[#991B33] focus:bg-white focus:outline-none"
                     />
                   </div>
@@ -1026,7 +1026,7 @@ export default function CheckoutPage() {
                       type="text"
                       value={formLandmark}
                       onChange={(e) => setFormLandmark(e.target.value)}
-                      placeholder="e.g. Near Cargo Terminal 3"
+                      placeholder="e.g. Near Metro Station"
                       className="w-full rounded-xl border border-[#E7E2D9] bg-[#FAF8F5] px-3.5 py-2.5 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:border-[#991B33] focus:bg-white focus:outline-none"
                     />
                   </div>

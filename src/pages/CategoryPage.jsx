@@ -95,7 +95,7 @@ function ProductCard({ product }) {
               openReviews(product)
             }}
             className="mt-1 flex items-center gap-1 cursor-pointer group/rating hover:opacity-90 transition-opacity"
-            title="Click to view verified importer reviews"
+            title="Click to view verified buyer reviews"
           >
             <div className="flex items-center text-amber-500">
               {[...Array(5)].map((_, i) => (
@@ -133,7 +133,7 @@ function ProductCard({ product }) {
           </div>
         </div>
 
-        {/* 4. Add to Order Button */}
+        {/* 4. Add to Bag Button */}
         <div className="mt-3 pt-3 border-t border-[#E7E2D9]">
           <button
             onClick={handleAdd}
@@ -143,10 +143,10 @@ function ProductCard({ product }) {
                 ? 'bg-stone-100 text-stone-400 border border-stone-200 cursor-not-allowed'
                 : 'bg-[#991B33] text-white hover:bg-[#7E1227] shadow-xs active:scale-98'
             }`}
-            aria-label={isOutOfStock ? `${product.name} is in backorder` : `Add ${product.name} to order`}
+            aria-label={isOutOfStock ? `${product.name} is out of stock` : `Add ${product.name} to bag`}
           >
             <ShoppingBag className="h-3.5 w-3.5" />
-            <span>{isOutOfStock ? 'In Backorder' : 'Add to Order'}</span>
+            <span>{isOutOfStock ? 'Out of Stock' : 'Add to Bag'}</span>
           </button>
         </div>
       </div>
@@ -172,7 +172,7 @@ export default function CategoryPage() {
         <Navbar />
         <div className="mx-auto max-w-xl text-center px-4 py-32">
           <h1 className="font-heading text-4xl font-bold text-[#1C1917]">Category Not Found</h1>
-          <p className="mt-3 text-[#78716C]">The requested electronics export vertical does not exist.</p>
+          <p className="mt-3 text-[#78716C]">The requested tech collection does not exist.</p>
           <Link
             to="/"
             className="inline-flex items-center gap-2 mt-6 rounded-full px-6 py-3 text-xs font-bold uppercase tracking-widest bg-[#991B33] text-white hover:bg-[#7E1227] transition-colors"
@@ -213,22 +213,22 @@ export default function CategoryPage() {
             className="group mb-6 inline-flex items-center gap-2 rounded-full border border-[#E7E2D9] bg-white/90 px-4 py-2 text-xs font-semibold text-[#1C1917] backdrop-blur-sm transition-all hover:border-[#991B33] hover:text-[#991B33] shadow-xs"
           >
             <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-1" />
-            <span>All Export Verticals</span>
+            <span>All Tech Collections</span>
           </Link>
 
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
             <div>
               <h1 className="font-heading text-3xl font-extrabold tracking-tight text-[#1C1917] sm:text-5xl lg:text-6xl">
-                {genre.label} Electronics & Hardware
+                {genre.label} Collection
               </h1>
               <p className="mt-2 max-w-xl text-sm leading-relaxed text-[#44403C] sm:text-base">
-                Certified {genre.label.toLowerCase()} components, export-grade hardware batches, and bulk trade pricing.
+                Certified {genre.label.toLowerCase()} devices, audiophile components, and flagship consumer technology.
               </p>
             </div>
 
             <div className="rounded-2xl border border-[#E7E2D9] bg-white/95 px-5 py-3 shadow-xs self-start sm:self-end">
               <span className="text-xs text-[#78716C] block">
-                {products.length > 0 ? 'Export SKUs Available' : 'Vertical Status'}
+                {products.length > 0 ? 'Models Available' : 'Collection Status'}
               </span>
               <span className="font-heading text-lg font-bold text-[#991B33] flex items-center gap-1.5">
                 {products.length > 0 ? (
@@ -259,10 +259,10 @@ export default function CategoryPage() {
             /* Coming Soon Showcase */
             <div className="my-8 mx-auto max-w-2xl rounded-3xl border border-[#E7E2D9] bg-white p-8 sm:p-14 text-center shadow-md relative overflow-hidden">
               <h2 className="font-heading text-3xl sm:text-4xl font-extrabold text-[#1C1917] leading-tight">
-                Expanding {genre.label} Export Line
+                Expanding {genre.label} Collection
               </h2>
               <p className="mt-4 max-w-lg mx-auto text-base sm:text-lg leading-relaxed text-[#44403C]">
-                We are onboarding new Tier-1 certified <span className="text-[#991B33] font-semibold">{genre.label}</span> batches. Contact us for custom OEM specs!
+                We are curating new flagship <span className="text-[#991B33] font-semibold">{genre.label}</span> innovations for this collection.
               </p>
 
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">

@@ -149,7 +149,7 @@ function ProductCard({ product }) {
           </div>
         </div>
 
-        {/* Add to Quotation / Cart Button */}
+        {/* Add to Bag Button */}
         <div className="mt-3 pt-2.5 border-t border-[#F0EBE3]">
           <button
             onClick={handleAdd}
@@ -159,10 +159,10 @@ function ProductCard({ product }) {
                 ? 'bg-stone-100 text-stone-400 border border-stone-200 cursor-not-allowed'
                 : 'bg-[#991B33] hover:bg-[#7E1227] text-white shadow-xs hover:shadow-md hover:shadow-[#991B33]/20 active:scale-98 cursor-pointer'
             }`}
-            aria-label={isOutOfStock ? `${product.name} is out of stock` : `Add ${product.name} to quotation`}
+            aria-label={isOutOfStock ? `${product.name} is out of stock` : `Add ${product.name} to bag`}
           >
             <ShoppingBag className="h-3.5 w-3.5" />
-            <span>{isOutOfStock ? 'Out of Stock' : 'Add to Quotation'}</span>
+            <span>{isOutOfStock ? 'Out of Stock' : 'Add to Bag'}</span>
           </button>
         </div>
       </div>
@@ -207,13 +207,13 @@ export default function ProductGrid() {
         {/* Section Header */}
         <div className="mb-10 text-center max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-[#FDF2F4] text-[#991B33] border border-[#F7CCD5] mb-3">
-            <span>EXPORT CATALOGUE</span>
+            <span>CURATED COLLECTION</span>
           </div>
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1C1917] tracking-tight">
-            Certified Export Electronics
+            Flagship Electronics Collection
           </h2>
           <p className="mt-3 text-sm sm:text-base leading-relaxed text-[#57534E]">
-            Direct-from-manufacturer consumer electronics, high-capacity GaN power stations, and studio audio systems prepared for international wholesale shipping.
+            Direct flagship consumer electronics, next-gen GaN fast chargers, titanium smart wearables, and studio-grade acoustics crafted for discerning tech connoisseurs.
           </p>
         </div>
 
@@ -241,7 +241,7 @@ export default function ProductGrid() {
           <div className="mt-16 flex flex-col items-center gap-2 text-center">
             <div className="h-px w-24 bg-gradient-to-r from-transparent via-[#991B33]/40 to-transparent" />
             <p className="mt-2 text-xs text-[#78716C] tracking-wider uppercase font-semibold">
-              All {catalog.length} export models displayed
+              All {catalog.length} flagship models displayed
             </p>
           </div>
         )}

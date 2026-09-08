@@ -91,7 +91,7 @@ export default function ReviewsModal() {
                   {rev.verified && (
                     <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
                       <CheckCircle2 className="h-3 w-3 text-emerald-600" />
-                      Verified Importer
+                      Verified Buyer
                     </span>
                   )}
                 </div>
