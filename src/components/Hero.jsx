@@ -242,25 +242,6 @@ export default function Hero() {
                 <span>Explore Best Sellers</span>
               </button>
             </div>
-
-            {/* Social Proof */}
-            <div className="mt-8 pt-6 border-t border-[#EAE5DD] flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#78716C] block mb-1.5">Certified Architecture</span>
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  {['Hi-Res Audio', 'Dolby Atmos', 'Bluetooth 5.4', 'GaN III'].map((t) => (
-                    <span key={t} className="px-2 py-0.5 rounded text-[10px] font-bold bg-white border border-[#E7E2D9] text-[#1C1917]">{t}</span>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#78716C] block mb-1.5">Rated Excellent: 4.9/5</span>
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => <Star key={i} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />)}
-                  <span className="text-[11px] font-bold text-[#1C1917] ml-1">12,400+ Verified</span>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* ──────── RIGHT COLUMN: BENTO GALLERY ──────── */}
@@ -271,16 +252,6 @@ export default function Hero() {
           >
             {/* MOBILE VIEW: INFINITE SHOWCASE BENTO RIBBON */}
             <div className="lg:hidden">
-              <div className="flex items-center justify-between mb-3 px-1">
-                <div className="flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-[#991B33] animate-ping" />
-                  <span className="text-xs font-bold text-[#1C1917]">Flagship Showcase</span>
-                </div>
-                <span className="text-xs font-bold text-[#1C1917] font-mono bg-white px-2.5 py-0.5 rounded-full border border-[#E7E2D9] shadow-2xs">
-                  {String(currentIndex + 1).padStart(2, '0')} / {String(productList.length).padStart(2, '0')}
-                </span>
-              </div>
-
               <div
                 ref={carouselRef}
                 onScroll={handleScroll}
