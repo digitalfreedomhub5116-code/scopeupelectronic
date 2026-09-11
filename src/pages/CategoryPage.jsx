@@ -172,7 +172,7 @@ export default function CategoryPage() {
         <Navbar />
         <div className="mx-auto max-w-xl text-center px-4 py-32">
           <h1 className="font-heading text-4xl font-bold text-[#1C1917]">Category Not Found</h1>
-          <p className="mt-3 text-[#78716C]">The requested tech collection does not exist.</p>
+          <p className="mt-3 text-[#78716C]">The requested collection does not exist.</p>
           <Link
             to="/"
             className="inline-flex items-center gap-2 mt-6 rounded-full px-6 py-3 text-xs font-bold uppercase tracking-widest bg-[#991B33] text-white hover:bg-[#7E1227] transition-colors"
@@ -213,22 +213,22 @@ export default function CategoryPage() {
             className="group mb-6 inline-flex items-center gap-2 rounded-full border border-[#E7E2D9] bg-white/90 px-4 py-2 text-xs font-semibold text-[#1C1917] backdrop-blur-sm transition-all hover:border-[#991B33] hover:text-[#991B33] shadow-xs"
           >
             <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-1" />
-            <span>All Tech Collections</span>
+            <span>All Collections</span>
           </Link>
 
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
             <div>
               <h1 className="font-heading text-3xl font-extrabold tracking-tight text-[#1C1917] sm:text-5xl lg:text-6xl">
-                {genre.label} Collection
+                {genre.label}
               </h1>
               <p className="mt-2 max-w-xl text-sm leading-relaxed text-[#44403C] sm:text-base">
-                Certified {genre.label.toLowerCase()} devices, audiophile components, and premium consumer technology.
+                {genre.description}
               </p>
             </div>
 
             <div className="rounded-2xl border border-[#E7E2D9] bg-white/95 px-5 py-3 shadow-xs self-start sm:self-end">
               <span className="text-xs text-[#78716C] block">
-                {products.length > 0 ? 'Models Available' : 'Collection Status'}
+                {products.length > 0 ? 'Curated Pieces' : 'Collection Status'}
               </span>
               <span className="font-heading text-lg font-bold text-[#991B33] flex items-center gap-1.5">
                 {products.length > 0 ? (

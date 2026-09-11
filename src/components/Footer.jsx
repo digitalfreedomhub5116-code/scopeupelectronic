@@ -34,14 +34,14 @@ export default function Footer() {
               </div>
             </Link>
             <p className="mt-3.5 max-w-xs text-xs sm:text-sm leading-relaxed text-[#78716C]">
-              Direct premium consumer electronics brand crafting studio-grade audio, titanium smart wearables, and high-performance GaN charging stations.
+              Direct curated lifestyle brand crafting artisanal handicrafts, authentic jewellery, bespoke frames, mobile essentials & high-fidelity acoustics.
             </p>
           </div>
 
           {/* Product Categories */}
           <div>
             <h4 className="text-xs font-bold tracking-[0.15em] text-[#1C1917] uppercase">
-              Tech Collections
+              Curated Collections
             </h4>
             <ul className="mt-4 space-y-2.5">
               {GENRES.map((g) => (

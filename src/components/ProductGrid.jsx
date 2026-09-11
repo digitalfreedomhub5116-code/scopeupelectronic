@@ -195,7 +195,7 @@ export default function ProductGrid() {
         {/* Section Header */}
         <div className="mb-10 text-center max-w-2xl mx-auto">
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1C1917] tracking-tight">
-            Premium Electronics Collection
+            Curated Lifestyle Collections
           </h2>
         </div>
 
@@ -223,7 +223,7 @@ export default function ProductGrid() {
           <div className="mt-16 flex flex-col items-center gap-2 text-center">
             <div className="h-px w-24 bg-gradient-to-r from-transparent via-[#991B33]/40 to-transparent" />
             <p className="mt-2 text-xs text-[#78716C] tracking-wider uppercase font-semibold">
-              All {catalog.length} models displayed
+              All {catalog.length} curated pieces displayed
             </p>
           </div>
         )}

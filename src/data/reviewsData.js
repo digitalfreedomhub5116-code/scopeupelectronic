@@ -22,34 +22,40 @@ export const REVIEWS_POOL = {
 
   // Specific positive reviews per category
   genreSpecific: {
-    AUDIO: [
-      { name: "Kabir Roy", text: "anc is seriously studio grade 40mm drivers deliver deep punchy bass" },
-      { name: "Tushar Bansal", text: "latency in gaming mode is negligible zero audio delay noticed" },
-      { name: "Aakash Pandey", text: "ear cushion comfort is sublime wore it 8 hours straight without fatigue" },
-      { name: "Rahul Saxena", text: "hi res certified sound profile makes lossless flac tracks shine" },
+    JEWELLERY: [
+      { name: "Pooja Hegde", text: "kundan work and gold finish looks breathtaking received so many compliments" },
+      { name: "Ananya Iyer", text: "hallmarked 925 sterling silver shines beautifully zero skin irritation" },
+      { name: "Meera Sen", text: "packaging was royal gift box with certificate of authenticity included" },
     ],
-    WEARABLES: [
-      { name: "Yashwant Singhania", text: "amoled display is super bright outdoors touch response is fluid" },
-      { name: "Karan Johar", text: "heart rate and spo2 tracking matches my clinical oximeter readings" },
-      { name: "Rishi Kapoor", text: "titanium bezel looks ultra luxury on the wrist battery lasts 10 days" },
+    HANDICRAFTS: [
+      { name: "Sunil Narang", text: "hand carved teakwood finish shows true master artisanal craftsmanship" },
+      { name: "Radhika Kulkarni", text: "dhokra brass art pieces look stunning on my living room console" },
+      { name: "Vikram Singhal", text: "blue pottery glaze is vibrant authentic handmade heritage treasure" },
     ],
-    POWER: [
-      { name: "Armaan Malik", text: "gan fast charger charges my macbook pro and iphone simultaneously with ease" },
-      { name: "Dhruv Mittal", text: "zero thermal throttling runs surprisingly cool even on full 140w load" },
-      { name: "Sanjay Singhal", text: "digital percentage display is super handy heavy duty compact power bank" },
-      { name: "Sameer Merchant", text: "magnetic alignment is strong snaps on instantly and charges super fast" },
+    FRAMES: [
+      { name: "Tanvi Deshpande", text: "gold leaf profile is majestic glass clarity is museum grade" },
+      { name: "Rajat Kapoor", text: "solid walnut wood desk frame has heavy luxury feel flawless joinery" },
+      { name: "Sneha Nair", text: "floating acrylic frame with neodymium magnets makes changing photos effortless" },
     ],
-    PERIPHERALS: [
-      { name: "Reyansh Bhatt", text: "linear yellow switches feel creamy out of the box pbt keycaps are great" },
-      { name: "Ayush Khurana", text: "mouse sensor tracking at 26k dpi is razor sharp for competitive fps" },
-      { name: "Shubham Gill", text: "4k webcam clarity is crystal clear in low light auto focus is rapid" },
-      { name: "Tanmay Bhatia", text: "thunderbolt dock handles dual 4k displays and 100w charging effortlessly" },
+    KEYCHAINS: [
+      { name: "Kartik Mehta", text: "full grain leather keychain is thick and smells divine developing great patina" },
+      { name: "Arjun Verma", text: "titanium carabiner is featherlight solid CNC machining best EDC gear" },
+      { name: "Diya Sharma", text: "botanical resin charm with real flowers is so delicate and pretty" },
     ],
-    SMARTHOME: [
-      { name: "Chirag Agrawal", text: "solar panel keeps the outdoor camera at 100 percent battery all week" },
-      { name: "Mohit Chauhan", text: "color night vision is crisp detected motion accurately from 30 feet" },
-      { name: "Abhishek Nambiar", text: "smart light bar syncs seamlessly with tv audio vibrant immersive glow" },
-      { name: "Ritvik Sen", text: "e ink sensor display is readable from any angle zigbee pairing was instant" },
+    MOBILE_ACCESSORIES: [
+      { name: "Naveen Reddy", text: "magsafe leather case has insane magnetic grip and tactile metal buttons" },
+      { name: "Prateek Jain", text: "aluminum 360 rotating stand is sturdy holds my phone and ipad with zero wobble" },
+      { name: "Suresh Pillai", text: "braided 100w fast charge cable is ultra durable heavy duty build" },
+    ],
+    SPEAKERS: [
+      { name: "Kabir Roy", text: "120w dolby atmos soundbar fills living room with theater quality spatial audio" },
+      { name: "Tushar Bansal", text: "walnut wooden reference monitors deliver deep warm bass and pristine treble" },
+      { name: "Aakash Pandey", text: "waterproof rugged speaker survived heavy outdoor rains battery lasts days" },
+    ],
+    HEADPHONES: [
+      { name: "Aarav Sharma", text: "anc cuts out all traffic noise effortlessly 40mm drivers deliver rich sound" },
+      { name: "Rahul Saxena", text: "ultra low 38ms latency for gaming is spot on zero lag with pro mic" },
+      { name: "Harshit Sen", text: "memory foam ear cushions are ultra plush comfortable for all day listening" },
     ],
   },
 

@@ -12,63 +12,63 @@ import { useCartStore, MOCK_PRODUCTS } from '../store/cartStore'
 const DESKTOP_BENTO_ITEMS = [
   {
     id: 1,
+    name: 'Aura Royal Kundan Choker Set',
+    subtitle: 'Polki Kundan · 22K Gold Finish · Pearls',
+    badge: 'KUNDAN JEWELLERY',
+    price: 4499,
+    originalPrice: 8999,
+    image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=900&q=80',
+    tag: 'Heirloom Craft',
+  },
+  {
+    id: 5,
+    name: 'Hand-Carved Teakwood Ganesha',
+    subtitle: 'Single-Block Indian Teak · Master Relief',
+    badge: 'ARTISANAL CRAFT',
+    price: 3899,
+    originalPrice: 7499,
+    image: 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=900&q=80',
+    tag: 'Hand-Carved',
+  },
+  {
+    id: 9,
+    name: 'Imperial Vintage Gold Frame',
+    subtitle: 'Victorian Baroque Leaf · Archival Float Glass',
+    badge: 'GALLERY FRAMES',
+    price: 1699,
+    originalPrice: 3299,
+    image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=900&q=80',
+    tag: 'Gold Foil Gilded',
+  },
+  {
+    id: 24,
     name: 'AeroPro Wireless ANC Studio',
     subtitle: '48dB Hybrid ANC · 40mm Ti Drivers',
-    badge: 'STUDIO AUDIO',
+    badge: 'STUDIO ACOUSTICS',
     price: 3499,
     originalPrice: 6999,
     image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=900&q=80',
     tag: 'Hi-Res Certified',
   },
   {
-    id: 5,
-    name: 'PulseSync Ultra Titanium',
-    subtitle: 'Aerospace Titanium · 1.96" AMOLED',
-    badge: 'TITANIUM 49MM',
-    price: 2999,
-    originalPrice: 5999,
-    image: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=900&q=80',
-    tag: 'MIL-STD-810H',
+    id: 17,
+    name: 'MagSafe Italian Leather Case',
+    subtitle: 'Full-Grain Calfskin · N52 Magnets',
+    badge: 'MOBILE ESSENTIALS',
+    price: 1499,
+    originalPrice: 2999,
+    image: 'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=900&q=80',
+    tag: 'Italian Leather',
   },
   {
-    id: 9,
-    name: 'HyperGaN 140W Desktop Charger',
-    subtitle: 'PD 3.1 Fast Charge · 4-Port GaN III',
-    badge: '140W GaN III',
-    price: 2499,
-    originalPrice: 4999,
-    image: 'https://images.unsplash.com/photo-1622445268462-337fbf868d60?w=900&q=80',
-    tag: 'PD 3.1 Ultra',
-  },
-  {
-    id: 3,
-    name: 'SonicPulse Hi-Fi Studio Monitors',
-    subtitle: '80W RMS Near-Field Reference Pair',
-    badge: 'STUDIO ACOUSTICS',
-    price: 5499,
-    originalPrice: 9999,
-    image: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=900&q=80',
-    tag: 'Audiophile Grade',
-  },
-  {
-    id: 2,
-    name: 'QuantumBass Pro Earbuds',
-    subtitle: '38ms Low Latency · 40h Playtime',
-    badge: '38ms GAMING',
-    price: 1899,
-    originalPrice: 3999,
-    image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=900&q=80',
-    tag: 'IPX5 Splash',
-  },
-  {
-    id: 4,
-    name: 'EchoBar 120W Dolby Atmos Soundbar',
-    subtitle: 'Spatial 3D Audio · HDMI eARC',
-    badge: 'DOLBY ATMOS',
-    price: 6299,
-    originalPrice: 11999,
-    image: 'https://images.unsplash.com/photo-1543512214-318c7553f230?w=900&q=80',
-    tag: 'Spatial Audio',
+    id: 13,
+    name: 'Saddle Leather Monogram Keychain',
+    subtitle: '4mm Full-Grain Leather · Solid Brass',
+    badge: 'HANDCRAFTED GIFTS',
+    price: 699,
+    originalPrice: 1399,
+    image: 'https://images.unsplash.com/photo-1614036417651-efe5912149d8?w=900&q=80',
+    tag: 'Natural Patina',
   },
 ]
 
@@ -287,13 +287,13 @@ export default function Hero() {
               <span className="text-[11px] font-extrabold text-[#1C1917]">4.9</span>
             </div>
             <span className="text-[10px] font-semibold text-[#78716C]">
-              · 4,800+ Verified Buyers Across India
+              · 12,000+ Happy Customers Across India
             </span>
           </div>
 
           {/* Centered Headline */}
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#1C1917] tracking-tight leading-[1.2] max-w-xs sm:max-w-sm">
-            Precision Engineered Sound & Premium Tech.
+            Artisanal Crafts, Luxury Jewellery & Premium Tech.
           </h1>
 
           {/* Dual CTAs (Side by side for mobile vertical compactness) */}
@@ -341,7 +341,7 @@ export default function Hero() {
                 {count2}%
               </span>
               <span className="text-[9px] font-bold tracking-wider text-[#78716C] uppercase mt-0.5 leading-tight">
-                Genuine Certified Tech
+                Authentic & Handcrafted
               </span>
             </div>
 
@@ -356,7 +356,7 @@ export default function Hero() {
                 {count3.toLocaleString('en-IN')}+
               </span>
               <span className="text-[9px] font-bold tracking-wider text-[#78716C] uppercase mt-0.5 leading-tight">
-                Devices Delivered
+                Happy Customers
               </span>
             </div>
 
@@ -523,7 +523,7 @@ export default function Hero() {
             }`}
           >
             <h1 className="font-serif text-[46px] xl:text-[52px] font-bold text-[#1C1917] tracking-tight leading-[1.14]">
-              Precision Engineered Sound & Premium Tech.
+              Artisanal Crafts, Luxury Jewellery & Premium Tech.
             </h1>
 
             <div className="mt-7 flex flex-row items-center gap-3">
@@ -531,7 +531,7 @@ export default function Hero() {
                 onClick={handleScrollToProducts}
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-[#991B33] hover:bg-[#7E1227] text-white px-6 py-3.5 text-sm font-bold tracking-wide transition-all shadow-md shadow-[#991B33]/20 hover:shadow-lg hover:shadow-[#991B33]/30 active:scale-98 cursor-pointer"
               >
-                <span>Shop All Devices</span>
+                <span>Shop All Collections</span>
                 <ArrowRight className="h-4 w-4" />
               </button>
               <button

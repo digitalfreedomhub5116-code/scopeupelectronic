@@ -133,7 +133,7 @@ export default function Navbar({ visible = true }) {
                   <span className="text-[#991B33]">INTERNATIONAL</span>
                 </div>
                 <span className="text-[7px] font-semibold tracking-[0.2em] text-[#78716C] uppercase leading-tight mt-0.5">
-                  PREMIUM ELECTRONICS & TECH
+                  CURATED LIFESTYLE, CRAFTS & TECH
                 </span>
               </div>
             </Link>
@@ -270,7 +270,7 @@ export default function Navbar({ visible = true }) {
                   <span className="text-[#991B33]">INTERNATIONAL</span>
                 </div>
                 <span className="text-[10px] font-semibold tracking-[0.2em] text-[#78716C] uppercase leading-tight">
-                  PREMIUM ELECTRONICS & TECH
+                  CURATED LIFESTYLE, CRAFTS & TECH
                 </span>
               </div>
             </Link>

@@ -521,7 +521,7 @@ export default function ProductPage() {
               {/* Key Features Bullet List */}
               <div className="mt-6 space-y-2.5">
                 <h4 className="text-xs font-bold uppercase tracking-widest text-[#991B33]">
-                  Key Technical Specifications
+                  Product Specifications & Highlights
                 </h4>
                 <ul className="space-y-2 text-sm text-[#44403C]">
                   {product.specs ? (
@@ -535,7 +535,7 @@ export default function ProductPage() {
                     <>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-4 w-4 text-[#991B33] flex-shrink-0 mt-0.5" />
-                        <span>High-performance electronic components & precision engineering</span>
+                        <span>Artisanal craftsmanship & precision engineered materials</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-4 w-4 text-[#991B33] flex-shrink-0 mt-0.5" />
@@ -599,7 +599,7 @@ export default function ProductPage() {
             <div className="mt-8 rounded-2xl border border-[#E7E2D9] bg-white shadow-xs overflow-hidden">
               <div className="px-6 py-4 border-b border-[#E7E2D9] bg-[#FAF8F5]">
                 <h3 className="font-heading text-base font-bold text-[#1C1917]">
-                  Technical & Engineering Specifications
+                  Detailed Specifications & Craftsmanship
                 </h3>
               </div>
               <div className="divide-y divide-[#E7E2D9] text-sm">
@@ -618,11 +618,11 @@ export default function ProductPage() {
                     </div>
                     <div className="grid grid-cols-3 px-6 py-3.5">
                       <span className="text-[#78716C] font-medium">Compliance Standards</span>
-                      <span className="col-span-2 font-semibold text-[#1C1917]">CE, FCC, RoHS, ISO9001 Tested</span>
+                      <span className="col-span-2 font-semibold text-[#1C1917]">Certified Quality Standard</span>
                     </div>
                     <div className="grid grid-cols-3 px-6 py-3.5">
                       <span className="text-[#78716C] font-medium">QC Testing</span>
-                      <span className="col-span-2 font-semibold text-[#1C1917]">100% Pre-Shipment Hardware Verification</span>
+                      <span className="col-span-2 font-semibold text-[#1C1917]">100% Pre-Shipment Quality Verification</span>
                     </div>
                   </>
                 )}

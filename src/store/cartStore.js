@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { MOCK_PRODUCTS, GENRES } from '../data/productsData'
 import { getLocalCart, saveCartToAccount, saveProduct } from '../lib/db'
 
-const LOCAL_STORAGE_PRODUCTS_KEY = 'scope_International_products'
+const LOCAL_STORAGE_PRODUCTS_KEY = 'scope_International_catalog_v3'
 
 // Helper to load products from localStorage with fallback to default catalog
 const loadInitialProducts = () => {
